@@ -5,6 +5,7 @@ import vision from '@google-cloud/vision';
 import path from 'path';
 import fs from 'fs';
 import mysql from 'mysql2/promise';
+import cors from 'cors';
 import express from 'express';
 const app = express();
 
@@ -66,11 +67,32 @@ const startServer = async () => {
   pool = await initDb();
   const db = pool;
 
-  app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    next();
-  });
+  const allowedOrigins = [
+    'https://adaliclothing.vercel.app',   // Frontend a Vercel-en
+    'http://adaliclothing.vercel.app',    // HTTP verzió is (bár a Vercel általában HTTPS-t használ)
+    'http://localhost:3000',              // Lokális fejlesztési környezet
+    'https://adaliclothing.onrender.com'  // Saját domain a Render-en
+  ];
+  
+  const corsOptions = {
+    origin: function (origin, callback) {
+      // Engedélyezzük a nem-böngésző kéréseket (pl. Postman)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+        callback(null, true);
+      } else {
+        console.log('CORS hiba:', origin);
+        callback(new Error('CORS policy violation'));
+      }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+    credentials: true,
+    maxAge: 86400 // 24 óra
+  };
+  
+  app.use(cors(corsOptions));
   
   app.use(express.json({ limit: '50mb' }));
   app.use(express.urlencoded({ extended: true, limit: '50mb' }));
