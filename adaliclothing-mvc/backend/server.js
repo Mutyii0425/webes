@@ -193,7 +193,7 @@ const startServer = async () => {
   });
 
 
-const keyFilePath = path.resolve('./vision-api-key.json');
+const keyFilePath = path.resolve('./vision-api-key1.json');
 console.log('Vision API kulcs elérési útja:', keyFilePath);
 
 
@@ -261,7 +261,7 @@ app.post('/api/analyze-image', async (req, res) => {
       
       
       const visionClient = new vision.ImageAnnotatorClient({
-        keyFilename: './vision-api-key.json'
+        keyFilename: './vision-api-key1.json'
       });
       
  
