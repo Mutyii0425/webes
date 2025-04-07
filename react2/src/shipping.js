@@ -74,9 +74,9 @@ const showAlert = (message, severity = 'error', title = '') => {
   setAlertOpen(true);
 };
 
-const discountAmount = Math.round((totalPrice * discountPercentage) / 100);
-const shippingCost = totalPrice > 19999 ? 0 : 1590;
-const finalPrice = totalPrice - discountAmount + shippingCost;
+const discountAmount = Math.round((validTotalPrice * validDiscountPercentage) / 100);
+const shippingCost = validTotalPrice > 19999 ? 0 : 1590;
+const finalPrice = validTotalPrice - discountAmount + shippingCost;
 
 const validateCoupon = async () => {
   if (!couponCode) {
@@ -414,10 +414,8 @@ const handleSubmitOrder = async () => {
     
    
     if (orderData.fizetesi_mod === 'kartya') {
-    
       showAlert('Rendelésed sikeresen elküldtük! Az értékelés után átirányítunk a fizetési oldalra.', 'success', 'Sikeres rendelés');
     } else {
-      
       showAlert('Rendelésed sikeresen elküldtük! Hamarosan emailben értesítünk a részletekről.', 'success', 'Sikeres rendelés');
     }
     
@@ -453,9 +451,8 @@ const saveRatingToDatabase = async (rating, comment) => {
     if (response.ok) {
       console.log('Értékelés sikeresen mentve');
       
-   
+      // Fizetési mód alapján navigálunk
       if (orderData.fizetesi_mod === 'kartya') {
-    
         navigate('/payment-simulation', { 
           state: { 
             orderId: orderId, 
@@ -471,7 +468,6 @@ const saveRatingToDatabase = async (rating, comment) => {
           } 
         });
       } else {
-      
         navigate('/kezdolap'); 
       }
       return true;
@@ -481,9 +477,9 @@ const saveRatingToDatabase = async (rating, comment) => {
       if (orderData.fizetesi_mod === 'kartya') {
         navigate('/payment-simulation', { 
           state: { 
-            orderId: orderId, // A state változót használjuk
-            amount: finalPriceState, // A state változót használjuk
-            items: orderItems, // A state változót használjuk
+            orderId: orderId,
+            amount: finalPriceState,
+            items: orderItems,
             shippingDetails: {
               name: orderData.nev,
               phoneNumber: orderData.telefonszam,
@@ -504,9 +500,9 @@ const saveRatingToDatabase = async (rating, comment) => {
     if (orderData.fizetesi_mod === 'kartya') {
       navigate('/payment-simulation', { 
         state: { 
-          orderId: orderId, // A state változót használjuk
-          amount: finalPriceState, // A state változót használjuk
-          items: orderItems, // A state változót használjuk
+          orderId: orderId,
+          amount: finalPriceState,
+          items: orderItems,
           shippingDetails: {
             name: orderData.nev,
             phoneNumber: orderData.telefonszam,
@@ -1130,8 +1126,8 @@ const saveRatingToDatabase = async (rating, comment) => {
   >
     <Typography sx={{ color: '#fff' }} variant="h6">Végösszeg:</Typography>
     <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#fff' }}>
-      {finalPrice.toLocaleString()} Ft
-    </Typography>
+  {!isNaN(finalPrice) ? finalPrice.toLocaleString() : "0"} Ft
+</Typography>
   </Box>
 
   
@@ -1375,61 +1371,61 @@ const saveRatingToDatabase = async (rating, comment) => {
     />
     
     <Button
-      onClick={async () => {  
-        if (rating === 0) {
-          alert('Kérjük, válassz egy értékelést!');
-          return;
+  onClick={async () => {  
+    if (rating === 0) {
+      alert('Kérjük, válassz egy értékelést!');
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    const success = await saveRatingToDatabase(rating, comment);
+    
+    if (success && orderData.fizetesi_mod === 'kartya') {
+      navigate('/payment-simulation', {
+        state: {
+          orderId: orderId,
+          amount: finalPriceState,
+          items: orderItems,
+          shippingDetails: {
+            name: orderData.nev,
+            phoneNumber: orderData.telefonszam,
+            zipCode: orderData.irsz,
+            city: orderData.telepules,
+            address: orderData.kozterulet
+          }
         }
-        
-        setIsLoading(true);
-        
-        const success = await saveRatingToDatabase(rating, comment);
-        
-        if (success && orderData.fizetesi_mod === 'kartya') {
-          navigate('/payment-simulation', {
-            state: {
-              orderId: orderId,
-              amount: finalPriceState,
-              items: orderItems,
-              shippingDetails: {
-                name: orderData.nev,
-                phoneNumber: orderData.telefonszam,
-                zipCode: orderData.irsz,
-                city: orderData.telepules,
-                address: orderData.kozterulet
-              }
-            }
-          });
-        } else if (success) {
-          navigate('/kezdolap');
-        }
-        
-        setOrderSuccess(false);
-        setIsLoading(false);
-      }}
-      variant="contained"
-      disabled={isLoading}
-      sx={{
-        mt: { xs: 1, sm: 1.5, md: 2 },
-        fontSize: { xs: '0.75rem', sm: '0.85rem', md: '1rem' },
-        padding: { xs: '6px 10px', sm: '8px 16px', md: '10px 20px' },
-        borderRadius: { xs: '4px', sm: '6px' },
-        textTransform: 'none',
-        lineHeight: 1.2,
-        height: { xs: '32px', sm: 'auto' },
-        minHeight: { xs: '32px', sm: '36px', md: '40px' },
-        whiteSpace: { xs: 'normal', md: 'nowrap' }
-      }}
-    >
-      {isLoading ? (
-        <CircularProgress size={16} color="inherit" sx={{ mr: 1 }} />
-      ) : null}
-      {orderData.fizetesi_mod === 'kartya' ? (
-        window.innerWidth < 400 ? 'Tovább a fizetéshez' : 'Értékelés küldése és tovább a fizetéshez'
-      ) : (
-        'Értékelés küldése'
-      )}
-    </Button>
+      });
+    } else if (success) {
+      navigate('/kezdolap');
+    }
+    
+    setOrderSuccess(false);
+    setIsLoading(false);
+  }}
+  variant="contained"
+  disabled={isLoading}
+  sx={{
+    mt: { xs: 1, sm: 1.5, md: 2 },
+    fontSize: { xs: '0.75rem', sm: '0.85rem', md: '1rem' },
+    padding: { xs: '6px 10px', sm: '8px 16px', md: '10px 20px' },
+    borderRadius: { xs: '4px', sm: '6px' },
+    textTransform: 'none',
+    lineHeight: 1.2,
+    height: { xs: '32px', sm: 'auto' },
+    minHeight: { xs: '32px', sm: '36px', md: '40px' },
+    whiteSpace: { xs: 'normal', md: 'nowrap' }
+  }}
+>
+  {isLoading ? (
+    <CircularProgress size={16} color="inherit" sx={{ mr: 1 }} />
+  ) : null}
+  {orderData.fizetesi_mod === 'kartya' ? (
+    window.innerWidth < 400 ? 'Tovább a fizetéshez' : 'Értékelés küldése és tovább a fizetéshez'
+  ) : (
+    'Értékelés küldése'
+  )}
+</Button>
   </Box>
 </Dialog>
 

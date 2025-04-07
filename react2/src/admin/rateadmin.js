@@ -307,7 +307,12 @@ const RateAdmin = () => {
     <Box sx={{
       backgroundColor: '#333',
       minHeight: '100vh',
-      transition: 'all 0.3s ease-in-out'
+      transition: 'all 0.3s ease-in-out',
+      display: 'flex',
+      flexDirection: 'column',
+      paddingBottom: 0,
+      margin: 0,
+      overflow: 'hidden'
     }}>
       
       <Box sx={{
@@ -749,29 +754,31 @@ const RateAdmin = () => {
 
     
       <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'center',
-        mt: { xs: 2, sm: 3 },
-        mb: { xs: 3, sm: 4 },
-        px: { xs: 2, sm: 0 }
-      }}>
-        <Button
-          onClick={() => navigate('/admin')}
-          variant="contained"
-          startIcon={<ArrowBackIcon />}
-          sx={{
-            backgroundColor: '#333',
-            '&:hover': {
-              backgroundColor: '#555'
-            },
-            fontSize: { xs: '0.75rem', sm: '0.875rem' },
-            py: { xs: 0.75, sm: 1 }
-          }}
-          size={isMobile ? "small" : "medium"}
-        >
-          Vissza az admin felületre
-        </Button>
-      </Box>
+  display: 'flex', 
+  justifyContent: 'flex-start',
+  mt: { xs: 2, sm: 3 },
+  mb: { xs: 3, sm: 4 },
+  px: { xs: 2, sm: 3 }
+}}>
+  <Button
+    onClick={() => navigate('/admin')}
+    variant="contained"
+    startIcon={<ArrowBackIcon />}
+    sx={{
+      backgroundColor: '#444',
+      '&:hover': {
+        backgroundColor: '#555'
+      },
+      fontSize: { xs: '0.75rem', sm: '0.875rem' },
+      py: { xs: 0.75, sm: 1 },
+      color: 'white',
+      borderColor: '#555'
+    }}
+    size={isMobile ? "small" : "medium"}
+  >
+    Vissza az admin felületre
+  </Button>
+</Box>
     </Box>
   );
 };
