@@ -63,25 +63,17 @@ async function saveUserProfileImageByUsername(pool, username, imageData) {
 const startServer = async () => {
   const app = await initializeApp();
 
-  // Initialize the database pool
+
   pool = await initDb();
   const db = pool;
 
-  const allowedOrigins = [
-    'https://adaliclothing.vercel.app',   // Frontend a Vercel-en
-    'http://adaliclothing.vercel.app',    // HTTP verzió is (bár a Vercel általában HTTPS-t használ)
-    'http://localhost:3000',              // Lokális fejlesztési környezet
-    'https://adaliclothing.onrender.com'  // Saját domain a Render-en
-  ];
-  
-  const corsOptions = {
-    origin: ['https://adaliclothing.vercel.app', 'http://localhost:3000'],
+
+  app.use(cors({
+    origin: 'https://adaliclothing.vercel.app',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
     credentials: true
-  };
-  
-  app.use(cors(corsOptions));
+  }));
   
   app.use(express.json({ limit: '50mb' }));
   app.use(express.urlencoded({ extended: true, limit: '50mb' }));
