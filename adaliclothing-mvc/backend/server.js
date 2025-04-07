@@ -75,21 +75,10 @@ const startServer = async () => {
   ];
   
   const corsOptions = {
-    origin: function (origin, callback) {
-      // Engedélyezzük a nem-böngésző kéréseket (pl. Postman)
-      if (!origin) return callback(null, true);
-      
-      if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
-        callback(null, true);
-      } else {
-        console.log('CORS hiba:', origin);
-        callback(new Error('CORS policy violation'));
-      }
-    },
+    origin: ['https://adaliclothing.vercel.app', 'http://localhost:3000'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
-    credentials: true,
-    maxAge: 86400 // 24 óra
+    credentials: true
   };
   
   app.use(cors(corsOptions));
