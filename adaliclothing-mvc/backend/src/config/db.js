@@ -6,10 +6,11 @@ dotenv.config({ path: './backend.env' });
 const createConnection = async () => {
   try {
     const connection = await mysql.createConnection({
-      host: process.env.DB_HOST || 'localhost',
-      user: process.env.DB_USER || 'webshoppp',
-      password: process.env.DB_PASS || 'Premo900',
-      database: process.env.DB_NAME || 'webshoppp'
+      host: process.env.DB_HOST || 'shinkansen.proxy.rlwy.net',
+      user: process.env.DB_USER || 'root',
+      password: process.env.DB_PASS || 'iZEUnLkFezgUIAWbcnFjyGSUsLyjGbmi',
+      database: process.env.DB_NAME || 'railway',
+      port: process.env.DB_PORT || '23644'
     });
     
     console.log('Connected to database');
