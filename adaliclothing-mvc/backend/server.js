@@ -63,13 +63,16 @@ async function saveUserProfileImageByUsername(pool, username, imageData) {
 const startServer = async () => {
   const app = await initializeApp();
 
-
+  // Initialize the database pool
   pool = await initDb();
   const db = pool;
 
-
+  // CORS beállítások a környezeti változó használatával
+  const corsOrigin = process.env.CORS_ORIGIN || 'https://adaliclothing.vercel.app';
+  console.log('CORS origin beállítva:', corsOrigin);
+  
   app.use(cors({
-    origin: 'https://adaliclothing.vercel.app',
+    origin: corsOrigin,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
     credentials: true
