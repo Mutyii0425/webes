@@ -255,7 +255,7 @@ useEffect(() => {
     const fetchRatings = async () => {
       try {
         
-        const response = await fetch('http://localhost:5000/ratings/get-all-ratings');
+        const response = await fetch('https://adaliclothing.onrender.com/ratings/get-all-ratings');
         const data = await response.json();
         console.log('Fetched ratings:', data);
         setRatings(data || []);
@@ -276,7 +276,7 @@ useEffect(() => {
         return;
       }
       
-      const response = await fetch(`http://localhost:5000/api/coupons/user-coupons/${userData.f_azonosito}`);
+      const response = await fetch(`https://adaliclothing.onrender.com/api/coupons/user-coupons/${userData.f_azonosito}`);
       
       if (!response.ok) {
         throw new Error('Hiba a kupon adatok lekérésekor');
@@ -348,7 +348,7 @@ useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user'));
     try {
       // Az új API végpont használata
-      const response = await fetch('http://localhost:5000/api/coupons/generate-registration', {
+      const response = await fetch('https://adaliclothing.onrender.com/api/coupons/generate-registration', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

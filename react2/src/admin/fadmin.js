@@ -112,7 +112,7 @@ export default function Fadmin() {
     setCouponResult(null);
     
     try {
-      const response = await fetch('http://localhost:5000/api/coupons/send-selected', {
+      const response = await fetch('https://adaliclothing.onrender.com/api/coupons/send-selected', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -173,7 +173,7 @@ export default function Fadmin() {
     setCouponResult(null);
     
     try {
-      const response = await fetch('http://localhost:5000/api/coupons/send-selected', {
+      const response = await fetch('https://adaliclothing.onrender.com/api/coupons/send-selected', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -225,7 +225,7 @@ export default function Fadmin() {
   // Kupon statisztikák lekérése
   const fetchCouponStats = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/coupons/stats');
+      const response = await fetch('https://adaliclothing.onrender.com/api/coupons/stats');
       
       if (response.ok) {
         const stats = await response.json();
@@ -240,7 +240,7 @@ export default function Fadmin() {
   const fetchCouponHistory = async () => {
     setIsLoadingHistory(true);
     try {
-      const response = await fetch('http://localhost:5000/api/coupons/history');
+      const response = await fetch('https://adaliclothing.onrender.com/api/coupons/history');
       
       if (response.ok) {
         const history = await response.json();
@@ -256,13 +256,13 @@ export default function Fadmin() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch('http://localhost:5000/users');
+        const response = await fetch('https://adaliclothing.onrender.com/users');
         const data = await response.json();
         
         // Lekérjük minden felhasználó kupon információit
         const usersWithCoupons = await Promise.all(data.map(async (user) => {
           try {
-            const couponResponse = await fetch(`http://localhost:5000/api/coupons/user-coupons/${user.f_azonosito}`);
+            const couponResponse = await fetch(`https://adaliclothing.onrender.com/api/coupons/user-coupons/${user.f_azonosito}`);
             
             if (couponResponse.ok) {
               const coupons = await couponResponse.json();
@@ -304,7 +304,7 @@ export default function Fadmin() {
     
     if (confirmation) {
       try {
-        const response = await fetch(`http://localhost:5000/users/${userId}`, {
+        const response = await fetch(`https://adaliclothing.onrender.com/users/${userId}`, {
           method: 'DELETE'
         });
       

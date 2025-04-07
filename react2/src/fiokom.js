@@ -124,7 +124,7 @@ export default function Fiokom() {
           setIsLoading(true);
           
           // Küldjük el a képet a szervernek
-          const response = await fetch('http://localhost:5000/profile-image', {
+          const response = await fetch('https://adaliclothing.onrender.com/profile-image', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -193,7 +193,7 @@ export default function Fiokom() {
     const user = JSON.parse(localStorage.getItem('user'));
     if (user && user.f_azonosito) {
       setIsLoading(true);
-      fetch(`http://localhost:5000/api/order-stats/${user.f_azonosito}`)
+      fetch(`https://adaliclothing.onrender.com/api/order-stats/${user.f_azonosito}`)
         .then(res => {
           if (!res.ok) {
             // Ha 404-es hiba van, akkor nincs rendelés
@@ -245,7 +245,7 @@ export default function Fiokom() {
       try {
         const user = JSON.parse(localStorage.getItem('user'));
         if (user && user.f_azonosito) {
-          const response = await fetch(`http://localhost:5000/api/coupons/user-coupons/${user.f_azonosito}`);
+          const response = await fetch(`https://adaliclothing.onrender.com/api/coupons/user-coupons/${user.f_azonosito}`);
           if (response.ok) {
             const coupons = await response.json();
             

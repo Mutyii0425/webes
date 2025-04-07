@@ -86,7 +86,7 @@ const validateCoupon = async () => {
   
   setIsValidatingCoupon(true);
   try {
-    const response = await fetch('http://localhost:5000/validate-coupon', {
+    const response = await fetch('https://adaliclothing.onrender.com/validate-coupon', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ couponCode })
@@ -190,7 +190,7 @@ const handleApplyCoupon = async () => {
     }
     
     
-    const response = await fetch(`http://localhost:5000/api/coupons/check-coupon/${normalizedCouponCode}`);
+    const response = await fetch(`https://adaliclothing.onrender.com/api/coupons/check-coupon/${normalizedCouponCode}`);
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -275,7 +275,7 @@ const handleSubmitOrder = async () => {
   setIsLoading(true);
   try {
     
-    const vevoResponse = await fetch('http://localhost:5000/vevo/create', {
+    const vevoResponse = await fetch('https://adaliclothing.onrender.com/vevo/create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -307,8 +307,8 @@ const handleSubmitOrder = async () => {
       try {
        
         const endpoint = appliedCoupon.type === 'email' 
-          ? 'http://localhost:5000/api/coupons/mark-email-coupon-used'
-          : 'http://localhost:5000/api/coupons/mark-coupon-used';
+          ? 'https://adaliclothing.onrender.com/api/coupons/mark-email-coupon-used'
+          : 'https://adaliclothing.onrender.com/api/coupons/mark-coupon-used';
           
         const response = await fetch(endpoint, {
           method: 'POST',
@@ -355,7 +355,7 @@ const handleSubmitOrder = async () => {
 
     
     for (const item of cartItems) {
-      const orderResponse = await fetch('http://localhost:5000/api/orders/create', {
+      const orderResponse = await fetch('https://adaliclothing.onrender.com/api/orders/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -377,14 +377,14 @@ const handleSubmitOrder = async () => {
       }
       
     
-      await fetch(`http://localhost:5000/termekek/${item.id}/stock`, {
+      await fetch(`https://adaliclothing.onrender.com/termekek/${item.id}/stock`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ quantity: item.mennyiseg })
       });
     }
 
-    const emailResponse = await fetch('http://localhost:5000/send-confirmation', {
+    const emailResponse = await fetch('https://adaliclothing.onrender.com/send-confirmation', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -433,7 +433,7 @@ const saveRatingToDatabase = async (rating, comment) => {
   try {
     const userData = JSON.parse(localStorage.getItem('user'));
     
-    const response = await fetch('http://localhost:5000/ratings/order-feedback', {
+    const response = await fetch('https://adaliclothing.onrender.com/ratings/order-feedback', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -624,7 +624,7 @@ const saveRatingToDatabase = async (rating, comment) => {
       
       // Ellenőrizd a helyes végpontot a backend kódban
       // Módosítsd az alábbi URL-t a megfelelő végpontra
-      const response = await fetch(`http://localhost:5000/api/coupons/user-coupons/${userData.f_azonosito}`);
+      const response = await fetch(`https://adaliclothing.onrender.com/api/coupons/user-coupons/${userData.f_azonosito}`);
       
       if (!response.ok) {
         throw new Error('Hiba a kupon adatok lekérésekor');

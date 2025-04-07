@@ -89,7 +89,7 @@ const toggleSideMenu = () => {
             formData.append('image', compressedFile);
   
             try {
-              const uploadResponse = await fetch('http://localhost:5000/upload', {
+              const uploadResponse = await fetch('https://adaliclothing.onrender.com/upload', {
                 method: 'POST',
                 body: formData
               });
@@ -132,7 +132,7 @@ const toggleSideMenu = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:5000/termekek/create', {
+      const response = await fetch('https://adaliclothing.onrender.com/termekek/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

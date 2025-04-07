@@ -179,7 +179,7 @@ export default function SignInForm() {
     setIsLoading(true); // Töltési állapot beállítása
     
     try {
-      const response = await fetch('http://localhost:5000/login', {
+      const response = await fetch('https://adaliclothing.onrender.com/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -232,7 +232,7 @@ export default function SignInForm() {
     setIsLoading(true);
     
     try {
-      const response = await fetch('http://localhost:5000/forgot-password', {
+      const response = await fetch('https://adaliclothing.onrender.com/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })

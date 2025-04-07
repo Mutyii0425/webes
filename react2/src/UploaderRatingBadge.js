@@ -24,7 +24,7 @@ const UploaderRatingBadge = ({ username, darkMode, onClick }) => {
   const fetchUserId = async () => {
     try {
       console.log(`Felhasználó ID lekérése: ${username}`);
-      const response = await fetch(`http://localhost:5000/ratings/user-id/${encodeURIComponent(username)}`);
+      const response = await fetch(`https://adaliclothing.onrender.com/ratings/user-id/${encodeURIComponent(username)}`);
       
       if (!response.ok) {
         if (response.status === 404) {
@@ -57,7 +57,7 @@ const UploaderRatingBadge = ({ username, darkMode, onClick }) => {
       setLoading(true);
       console.log(`Értékelések lekérése: ${userId}`);
       // Módosítsd az URL-t, hogy az új végpontot használja
-      const response = await fetch(`http://localhost:5000/ratings/user-ratings/${userId}`);
+      const response = await fetch(`https://adaliclothing.onrender.com/ratings/user-ratings/${userId}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

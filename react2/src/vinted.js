@@ -58,7 +58,7 @@ export default function Vinted() {
     const fetchProducts = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch('http://localhost:5000/products');
+        const response = await fetch('https://adaliclothing.onrender.com/products');
         let data = await response.json();
         console.log("Products fetched:", data);
         
@@ -72,7 +72,7 @@ export default function Vinted() {
           if (product.feltolto) {
             try {
               console.log(`Profilkép lekérése: ${product.feltolto}`);
-              const profileResponse = await fetch(`http://localhost:5000/profile-image/${product.feltolto}`);
+              const profileResponse = await fetch(`https://adaliclothing.onrender.com/profile-image/${product.feltolto}`);
               
               if (!profileResponse.ok) {
                 console.log(`Nem sikerült lekérni a profilképet: ${product.feltolto}, státusz: ${profileResponse.status}`);

@@ -302,13 +302,13 @@ const PersonalStyleAdvisor = () => {
         const formData = new FormData();
 formData.append('image', selectedFile);
 
-response = await fetch('http://localhost:5000/api/style/analyze-person', {
+response = await fetch('https://adaliclothing.onrender.com/api/style/analyze-person', {
   method: 'POST',
   body: formData
 });
       } else if (previewUrl) {
         console.log('Base64 kép küldése');
-        response = await fetch('http://localhost:5000/api/style/analyze-base64', {
+        response = await fetch('https://adaliclothing.onrender.com/api/style/analyze-base64', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

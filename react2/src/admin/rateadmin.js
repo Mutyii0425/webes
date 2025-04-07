@@ -28,7 +28,7 @@ const RateAdmin = () => {
 
   const fetchShopRatings = async () => {
     try {
-      const response = await fetch('http://localhost:5000/ratings/get-all-ratings');
+      const response = await fetch('https://adaliclothing.onrender.com/ratings/get-all-ratings');
       const data = await response.json();
      
       
@@ -44,7 +44,7 @@ const RateAdmin = () => {
  
   const fetchUserRatings = async () => {
     try {
-      const response = await fetch('http://localhost:5000/ratings/admin/all-user-ratings');
+      const response = await fetch('https://adaliclothing.onrender.com/ratings/admin/all-user-ratings');
      
       if (!response.ok) {
         console.error('Server error:', response.status);
@@ -80,7 +80,7 @@ const RateAdmin = () => {
   const handleDeleteUserRating = async (id) => {
     if (window.confirm('Biztosan törölni szeretnéd ezt a felhasználói értékelést?')) {
       try {
-        const response = await fetch(`http://localhost:5000/ratings/admin/delete-user-rating/${id}`, {
+        const response = await fetch(`https://adaliclothing.onrender.com/ratings/admin/delete-user-rating/${id}`, {
           method: 'DELETE'
         });
         if (response.ok) {
@@ -105,7 +105,7 @@ const RateAdmin = () => {
 
   const fetchRatings = async () => {
     try {
-      const response = await fetch('http://localhost:5000/ratings/get-all-ratings');
+      const response = await fetch('https://adaliclothing.onrender.com/ratings/get-all-ratings');
       const data = await response.json();
       setRatings(data);
     } catch (error) {
@@ -163,7 +163,7 @@ const RateAdmin = () => {
             return;
           }
          
-          const response = await fetch('http://localhost:5000/ratings/add-rating', {
+          const response = await fetch('https://adaliclothing.onrender.com/ratings/add-rating', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -212,7 +212,7 @@ const RateAdmin = () => {
     try {
       if (activeTab === 'shop') {
        
-        const response = await fetch(`http://localhost:5000/ratings/delete-rating/${id}`, {
+        const response = await fetch(`https://adaliclothing.onrender.com/ratings/delete-rating/${id}`, {
           method: 'DELETE'
         });
         const data = await response.json();
@@ -222,7 +222,7 @@ const RateAdmin = () => {
         }
       } else {
        
-        const response = await fetch(`http://localhost:5000/ratings/admin/delete-user-rating/${id}`, {
+        const response = await fetch(`https://adaliclothing.onrender.com/ratings/admin/delete-user-rating/${id}`, {
           method: 'DELETE'
         });
         const data = await response.json();
@@ -250,7 +250,7 @@ const RateAdmin = () => {
           velemeny: formData.velemeny
         });
        
-        const response = await fetch('http://localhost:5000/ratings/admin/add-user-rating', {
+        const response = await fetch('https://adaliclothing.onrender.com/ratings/admin/add-user-rating', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

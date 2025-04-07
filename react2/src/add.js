@@ -260,7 +260,7 @@ const cartItemCount = cartItems.reduce((total, item) => total + item.mennyiseg, 
   console.log('Küldendő adatok:', termekAdatok);
   
   try {
-    const response = await fetch('http://localhost:5000/usertermekek', {
+    const response = await fetch('https://adaliclothing.onrender.com/usertermekek', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -399,7 +399,7 @@ const cartItemCount = cartItems.reduce((total, item) => total + item.mennyiseg, 
   }, [selectedCategory]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/categories')
+    fetch('https://adaliclothing.onrender.com/categories')
       .then(response => response.json())
       .then(data => setCategories(data))
       .catch(error => console.log('Error:', error));
@@ -462,7 +462,7 @@ const analyzeImageWithAI = async (imageData) => {
     console.log('AI elemzés indítása...');
     setIsAnalyzing(true);
 
-    const response = await fetch('http://localhost:5000/api/analyze-image', {
+    const response = await fetch('https://adaliclothing.onrender.com/api/analyze-image', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

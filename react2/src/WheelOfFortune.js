@@ -53,7 +53,7 @@ const WheelOfFortune = ({ darkMode, showOnRegistration = false }) => {
       } else {
         try {
           // Ellenőrizzük, hogy a felhasználónak van-e már kupona
-          const response = await fetch(`http://localhost:5000/api/coupons/user-coupons/${user.f_azonosito}`);
+          const response = await fetch(`https://adaliclothing.onrender.com/api/coupons/user-coupons/${user.f_azonosito}`);
           
           if (response.ok) {
             const coupons = await response.json();
@@ -120,7 +120,7 @@ const WheelOfFortune = ({ darkMode, showOnRegistration = false }) => {
       const user = JSON.parse(localStorage.getItem('user'));
       
       if (user && user.f_azonosito) {
-        const response = await fetch('http://localhost:5000/api/coupons/save-wheel-prize', {
+        const response = await fetch('https://adaliclothing.onrender.com/api/coupons/save-wheel-prize', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

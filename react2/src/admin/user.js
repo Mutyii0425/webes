@@ -47,7 +47,7 @@ export default function User() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/products');
+        const response = await fetch('https://adaliclothing.onrender.com/products');
         const data = await response.json();
         setProducts(data);
       } catch (error) {
@@ -60,7 +60,7 @@ export default function User() {
   const handleDelete = async (productId) => {
     if (window.confirm('Biztosan törölni szeretnéd ezt a terméket?')) {
       try {
-        const response = await fetch(`http://localhost:5000/products/${productId}`, {
+        const response = await fetch(`https://adaliclothing.onrender.com/products/${productId}`, {
           method: 'DELETE'
         });
         
@@ -86,7 +86,7 @@ export default function User() {
 
   const handleSave = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/products/${editingProduct.id}`, {
+      const response = await fetch(`https://adaliclothing.onrender.com/products/${editingProduct.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

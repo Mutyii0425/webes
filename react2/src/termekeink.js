@@ -74,7 +74,7 @@ export default function TermekReszletek() {
     const fetchProduct = async () => {
       try {
         
-        const response = await fetch(`http://localhost:5000/termekek/${id}`);
+        const response = await fetch(`https://adaliclothing.onrender.com/termekek/${id}`);
         
         if (!response.ok) {
           const errorData = await response.json();

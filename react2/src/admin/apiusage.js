@@ -39,7 +39,7 @@ export default function ApiUsage() {
   const fetchApiUsage = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/usage');
+      const response = await fetch('https://adaliclothing.onrender.com/api/usage');
       
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -78,7 +78,7 @@ export default function ApiUsage() {
   const handleReset = async (apiName) => {
     if (window.confirm(`Biztosan nullázni szeretnéd a(z) ${apiName} használati számlálóját?`)) {
       try {
-        const response = await fetch('http://localhost:5000/api/usage/reset', {
+        const response = await fetch('https://adaliclothing.onrender.com/api/usage/reset', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

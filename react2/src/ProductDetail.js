@@ -71,7 +71,7 @@ export default function ProductDetail() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/products/${id}`);
+        const response = await fetch(`https://adaliclothing.onrender.com/products/${id}`);
         const data = await response.json();
         
         let imagesArray = [];
@@ -92,7 +92,7 @@ export default function ProductDetail() {
           
         
           try {
-            const profileResponse = await fetch(`http://localhost:5000/profile-image/${data.feltolto}`);
+            const profileResponse = await fetch(`https://adaliclothing.onrender.com/profile-image/${data.feltolto}`);
             if (profileResponse.ok) {
               const profileData = await profileResponse.json();
               if (profileData.success && profileData.profileImage) {

@@ -63,7 +63,7 @@ const UserRating = (props) => {
   const fetchUserId = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:5000/ratings/user-id/${encodeURIComponent(username)}`);
+      const response = await fetch(`https://adaliclothing.onrender.com/ratings/user-id/${encodeURIComponent(username)}`);
       
       if (!response.ok) {
         if (response.status === 404) {
@@ -92,7 +92,7 @@ const UserRating = (props) => {
   const fetchRatings = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:5000/ratings/user-ratings/${userId}`);
+      const response = await fetch(`https://adaliclothing.onrender.com/ratings/user-ratings/${userId}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -137,7 +137,7 @@ const UserRating = (props) => {
         velemeny: comment
       });
       
-      const response = await fetch('http://localhost:5000/ratings/add-user-rating', {
+      const response = await fetch('https://adaliclothing.onrender.com/ratings/add-user-rating', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

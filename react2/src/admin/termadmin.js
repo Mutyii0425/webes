@@ -34,7 +34,7 @@ export default function Termadmin() {
   const handleDelete = async (productId) => {
     if (window.confirm('Biztosan törölni szeretnéd ezt a terméket?')) {
       try {
-        const response = await fetch(`http://localhost:5000/termekek/${productId}`, {
+        const response = await fetch(`https://adaliclothing.onrender.com/termekek/${productId}`, {
           method: 'DELETE'
         });
   
@@ -67,7 +67,7 @@ export default function Termadmin() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:5000/termekek');
+        const response = await fetch('https://adaliclothing.onrender.com/termekek');
         const data = await response.json();
         setProducts(data);
       } catch (error) {
@@ -96,7 +96,7 @@ export default function Termadmin() {
 
   const handleSave = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/termekek/${editingProduct.id}`, {
+      const response = await fetch(`https://adaliclothing.onrender.com/termekek/${editingProduct.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -109,7 +109,7 @@ export default function Termadmin() {
 
       if (response.ok) {
         // Készlet frissítése külön kéréssel
-        const stockResponse = await fetch(`http://localhost:5000/termekek/${editingProduct.id}/set-stock`, {
+        const stockResponse = await fetch(`https://adaliclothing.onrender.com/termekek/${editingProduct.id}/set-stock`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -154,7 +154,7 @@ export default function Termadmin() {
   const handleBulkStockUpdate = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/termekek/set-all-stock', {
+      const response = await fetch('https://adaliclothing.onrender.com/termekek/set-all-stock', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -168,7 +168,7 @@ export default function Termadmin() {
       if (response.ok) {
         const result = await response.json();
         // Frissítsük a termékek listáját az új készletekkel
-        const updatedProducts = await fetch('http://localhost:5000/termekek').then(res => res.json());
+        const updatedProducts = await fetch('https://adaliclothing.onrender.com/termekek').then(res => res.json());
         setProducts(updatedProducts);
         
         setSnackbar({
