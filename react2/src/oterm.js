@@ -63,7 +63,7 @@ import InactivityAlert from './InactivityAlert';
       const fetchProducts = async () => {
         try {
           setIsLoading(true);
-          const response = await fetch('https://adaliclothing.onrender.com/termekek');
+          const response = await fetch('https://adaliclothing.onrender.com/api/termekek');
           const data = await response.json();
           await new Promise(resolve => setTimeout(resolve, 1500));
           setProducts(data);
