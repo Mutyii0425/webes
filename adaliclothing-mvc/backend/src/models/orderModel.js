@@ -25,6 +25,20 @@ class OrderModel {
     return result.insertId;
   }
 
+  async deleteAllOrders() {
+    try {
+      const [result] = await this.db.execute('DELETE FROM rendeles');
+      return {
+        success: true,
+        message: 'All orders have been deleted successfully',
+        deletedCount: result.affectedRows
+      };
+    } catch (error) {
+      console.error('Error deleting all orders:', error);
+      throw new Error('Database error when deleting orders');
+    }
+  }
+
   async getAllOrders() {
     try {
       const [rows] = await this.db.execute(

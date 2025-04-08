@@ -60,6 +60,24 @@ class OrderController {
     }
   }
 
+  async deleteAllOrders(req, res) {
+    try {
+      const result = await this.orderModel.deleteAllOrders();
+      
+      if (result.success) {
+        res.json({ 
+          message: result.message,
+          deletedCount: result.deletedCount
+        });
+      } else {
+        res.status(500).json({ error: 'Failed to delete orders' });
+      }
+    } catch (error) {
+      console.error('Error in deleteAllOrders controller:', error);
+      res.status(500).json({ error: 'Server error when deleting orders' });
+    }
+  }
+
 
         async getOrderStats(req, res) {
           try {

@@ -69,6 +69,8 @@ export default function Fadmin() {
   const [orderStatusDialogOpen, setOrderStatusDialogOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [newOrderStatus, setNewOrderStatus] = useState('');
+  const [isDeletingOrders, setIsDeletingOrders] = useState(false);
+  const [deleteOrdersDialogOpen, setDeleteOrdersDialogOpen] = useState(false);
   const [couponStats, setCouponStats] = useState({
     totalCoupons: 0,
     usedCoupons: 0,
@@ -395,6 +397,39 @@ export default function Fadmin() {
       setSnackbarOpen(true);
     } finally {
       setOrderStatusDialogOpen(false);
+    }
+  };
+
+  const handleDeleteAllOrders = async () => {
+    setIsDeletingOrders(true);
+    
+    try {
+      const response = await fetch('https://adaliclothing.onrender.com/api/orders', {
+        method: 'DELETE'
+      });
+      
+      const result = await response.json();
+      
+      if (response.ok) {
+        setSnackbarMessage(`Sikeresen törölve ${result.deletedCount} rendelés!`);
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
+        
+        // Frissítsük a rendelések listáját
+        setOrders([]);
+      } else {
+        setSnackbarMessage(result.error || 'Hiba történt a rendelések törlésekor');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+      }
+    } catch (error) {
+      console.error('Hiba a rendelések törlésekor:', error);
+      setSnackbarMessage('Hálózati hiba történt a rendelések törlésekor');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    } finally {
+      setIsDeletingOrders(false);
+      setDeleteOrdersDialogOpen(false);
     }
   };
 
@@ -915,12 +950,32 @@ export default function Fadmin() {
                       )}
 
 {activeTab === 3 && (
-  <Box sx={{ color: 'white' }}>
-    <Typography variant="h4" gutterBottom sx={{ 
-      fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' } 
+    <Box sx={{ color: 'white' }}>
+    <Box sx={{ 
+      display: 'flex', 
+      flexDirection: { xs: 'column', sm: 'row' }, 
+      justifyContent: 'space-between',
+      alignItems: { xs: 'flex-start', sm: 'center' },
+      mb: 3,
+      gap: 2
     }}>
-      Rendelések kezelése
-    </Typography>
+      <Typography variant="h4" gutterBottom sx={{ 
+        fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' } 
+      }}>
+        Rendelések kezelése
+      </Typography>
+      
+      <Button 
+        variant="contained" 
+        color="error" 
+        onClick={() => setDeleteOrdersDialogOpen(true)}
+        startIcon={<DeleteIcon />}
+        size={isMobile ? "small" : "medium"}
+        sx={{ fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.875rem' } }}
+      >
+        Összes rendelés törlése
+      </Button>
+    </Box>
     
     <Box sx={{ 
       display: 'flex', 
@@ -1459,6 +1514,60 @@ export default function Fadmin() {
                             </>
                           ) : (
                             'Kuponok küldése mindenkinek'
+                          )}
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
+
+                    <Dialog 
+                      open={deleteOrdersDialogOpen} 
+                      onClose={() => setDeleteOrdersDialogOpen(false)}
+                      maxWidth="sm"
+                      fullWidth
+                      PaperProps={{
+                        sx: {
+                          width: { xs: '95%', sm: '80%', md: '60%' },
+                          maxWidth: '500px'
+                        }
+                      }}
+                    >
+                      <DialogTitle sx={{ 
+                        fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
+                        color: 'error.main'
+                      }}>
+                        Összes rendelés törlése
+                      </DialogTitle>
+                      <DialogContent>
+                        <Typography variant="body1" gutterBottom sx={{ 
+                          fontSize: { xs: '0.875rem', sm: '1rem' } 
+                        }}>
+                          Biztosan törölni szeretnéd az összes rendelést? Ez a művelet nem visszavonható!
+                        </Typography>
+                        
+                        <Alert severity="warning" sx={{ mt: 2 }}>
+                          Ez a művelet az adatbázisból is törli az összes rendelést, és nem állítható vissza!
+                        </Alert>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button 
+                          onClick={() => setDeleteOrdersDialogOpen(false)}
+                          size={isMobile ? "small" : "medium"}
+                        >
+                          Mégse
+                        </Button>
+                        <Button 
+                          onClick={handleDeleteAllOrders}
+                          color="error"
+                          disabled={isDeletingOrders}
+                          size={isMobile ? "small" : "medium"}
+                        >
+                          {isDeletingOrders ? (
+                            <>
+                              <CircularProgress size={isMobile ? 16 : 24} sx={{ mr: 1 }} />
+                              Törlés...
+                            </>
+                          ) : (
+                            'Összes rendelés törlése'
                           )}
                         </Button>
                       </DialogActions>

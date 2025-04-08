@@ -29,8 +29,11 @@ export default (orderController) => {
 
   router.put('/api/orders/:id/status', orderController.updateOrderStatus.bind(orderController));
 
-  
+
   router.get('/api/orders/statistics', orderController.getOrderStatistics.bind(orderController));
+  
+
+  router.delete('/api/orders', orderController.deleteAllOrders.bind(orderController));
 
 
   return router;
