@@ -147,7 +147,7 @@ class AuthController {
             }
 
             try {
-              await sgMail.send(msg)
+              await emailService.send(msg)
               console.log('Password reset email sent successfully')
               res.json({ 
                 success: true,
