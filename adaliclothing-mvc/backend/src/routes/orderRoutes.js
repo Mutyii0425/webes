@@ -31,9 +31,8 @@ export default (orderController) => {
 
 
   router.get('/api/orders/statistics', orderController.getOrderStatistics.bind(orderController));
-  
 
-  router.delete('/api/orders', orderController.deleteAllOrders.bind(orderController));
+  router.delete('/api/orders-and-customers', orderController.deleteAllOrdersAndCustomers.bind(orderController));
 
 
   return router;

@@ -25,17 +25,35 @@ class OrderModel {
     return result.insertId;
   }
 
-  async deleteAllOrders() {
+  async deleteAllOrdersAndCustomers() {
     try {
-      const [result] = await this.db.execute('DELETE FROM rendeles');
-      return {
-        success: true,
-        message: 'All orders have been deleted successfully',
-        deletedCount: result.affectedRows
-      };
+      // Tranzakció kezdése
+      await this.db.beginTransaction();
+      
+      try {
+        // Először töröljük a rendeléseket (a külső kulcs miatt)
+        const [ordersResult] = await this.db.execute('DELETE FROM rendeles');
+        
+        // Majd töröljük a vevőket
+        const [customersResult] = await this.db.execute('DELETE FROM vevo');
+        
+        // Tranzakció véglegesítése
+        await this.db.commit();
+        
+        return {
+          success: true,
+          message: 'All orders and customers have been deleted successfully',
+          deletedOrders: ordersResult.affectedRows,
+          deletedCustomers: customersResult.affectedRows
+        };
+      } catch (error) {
+        // Hiba esetén visszagörgetjük a tranzakciót
+        await this.db.rollback();
+        throw error;
+      }
     } catch (error) {
-      console.error('Error deleting all orders:', error);
-      throw new Error('Database error when deleting orders');
+      console.error('Error deleting all orders and customers:', error);
+      throw new Error('Database error when deleting orders and customers');
     }
   }
 

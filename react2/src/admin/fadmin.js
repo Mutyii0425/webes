@@ -69,8 +69,8 @@ export default function Fadmin() {
   const [orderStatusDialogOpen, setOrderStatusDialogOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [newOrderStatus, setNewOrderStatus] = useState('');
-  const [isDeletingOrders, setIsDeletingOrders] = useState(false);
-  const [deleteOrdersDialogOpen, setDeleteOrdersDialogOpen] = useState(false);
+  const [isDeletingData, setIsDeletingData] = useState(false);
+  const [deleteDataDialogOpen, setDeleteDataDialogOpen] = useState(false);
   const [couponStats, setCouponStats] = useState({
     totalCoupons: 0,
     usedCoupons: 0,
@@ -400,36 +400,36 @@ export default function Fadmin() {
     }
   };
 
-  const handleDeleteAllOrders = async () => {
-    setIsDeletingOrders(true);
+  const handleDeleteAllData = async () => {
+    setIsDeletingData(true);
     
     try {
-      const response = await fetch('https://adaliclothing.onrender.com/api/orders', {
+      const response = await fetch('https://adaliclothing.onrender.com/api/orders-and-customers', {
         method: 'DELETE'
       });
       
       const result = await response.json();
       
       if (response.ok) {
-        setSnackbarMessage(`Sikeresen törölve ${result.deletedCount} rendelés!`);
+        setSnackbarMessage(`Sikeresen törölve ${result.deletedOrders} rendelés és ${result.deletedCustomers} vevő!`);
         setSnackbarSeverity('success');
         setSnackbarOpen(true);
         
         // Frissítsük a rendelések listáját
         setOrders([]);
       } else {
-        setSnackbarMessage(result.error || 'Hiba történt a rendelések törlésekor');
+        setSnackbarMessage(result.error || 'Hiba történt az adatok törlésekor');
         setSnackbarSeverity('error');
         setSnackbarOpen(true);
       }
     } catch (error) {
-      console.error('Hiba a rendelések törlésekor:', error);
-      setSnackbarMessage('Hálózati hiba történt a rendelések törlésekor');
+      console.error('Hiba az adatok törlésekor:', error);
+      setSnackbarMessage('Hálózati hiba történt az adatok törlésekor');
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
     } finally {
-      setIsDeletingOrders(false);
-      setDeleteOrdersDialogOpen(false);
+      setIsDeletingData(false);
+      setDeleteDataDialogOpen(false);
     }
   };
 
@@ -968,12 +968,12 @@ export default function Fadmin() {
       <Button 
         variant="contained" 
         color="error" 
-        onClick={() => setDeleteOrdersDialogOpen(true)}
+        onClick={() => setDeleteDataDialogOpen(true)}
         startIcon={<DeleteIcon />}
         size={isMobile ? "small" : "medium"}
         sx={{ fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.875rem' } }}
       >
-        Összes rendelés törlése
+        Összes rendelés és vevő törlése
       </Button>
     </Box>
     
@@ -1519,9 +1519,9 @@ export default function Fadmin() {
                       </DialogActions>
                     </Dialog>
 
-                    <Dialog 
-                      open={deleteOrdersDialogOpen} 
-                      onClose={() => setDeleteOrdersDialogOpen(false)}
+                   <Dialog 
+                      open={deleteDataDialogOpen} 
+                      onClose={() => setDeleteDataDialogOpen(false)}
                       maxWidth="sm"
                       fullWidth
                       PaperProps={{
@@ -1535,39 +1535,39 @@ export default function Fadmin() {
                         fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
                         color: 'error.main'
                       }}>
-                        Összes rendelés törlése
+                        Összes rendelés és vevő törlése
                       </DialogTitle>
                       <DialogContent>
                         <Typography variant="body1" gutterBottom sx={{ 
                           fontSize: { xs: '0.875rem', sm: '1rem' } 
                         }}>
-                          Biztosan törölni szeretnéd az összes rendelést? Ez a művelet nem visszavonható!
+                          Biztosan törölni szeretnéd az összes rendelést és vevőt? Ez a művelet nem visszavonható!
                         </Typography>
                         
                         <Alert severity="warning" sx={{ mt: 2 }}>
-                          Ez a művelet az adatbázisból is törli az összes rendelést, és nem állítható vissza!
+                          Ez a művelet az adatbázisból is törli az összes rendelést és vevőt, és nem állítható vissza!
                         </Alert>
                       </DialogContent>
                       <DialogActions>
                         <Button 
-                          onClick={() => setDeleteOrdersDialogOpen(false)}
+                          onClick={() => setDeleteDataDialogOpen(false)}
                           size={isMobile ? "small" : "medium"}
                         >
                           Mégse
                         </Button>
                         <Button 
-                          onClick={handleDeleteAllOrders}
+                          onClick={handleDeleteAllData}
                           color="error"
-                          disabled={isDeletingOrders}
+                          disabled={isDeletingData}
                           size={isMobile ? "small" : "medium"}
                         >
-                          {isDeletingOrders ? (
+                          {isDeletingData ? (
                             <>
                               <CircularProgress size={isMobile ? 16 : 24} sx={{ mr: 1 }} />
                               Törlés...
                             </>
                           ) : (
-                            'Összes rendelés törlése'
+                            'Összes adat törlése'
                           )}
                         </Button>
                       </DialogActions>
