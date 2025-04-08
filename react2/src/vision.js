@@ -206,7 +206,7 @@ const PersonalStyleAdvisor = () => {
     if (!selectedFile && !previewUrl) {
       setSnackbar({
         open: true,
-        message: 'Kérlek válassz ki vagy készíts egy képet',
+        message: 'Kérlek válassz ki egy képet',
         severity: 'warning'
       });
       return;
@@ -756,7 +756,7 @@ response = await fetch('https://adaliclothing.onrender.com/api/style/analyze-per
                     gutterBottom
                     sx={{ color: primaryColor, mb: 2 }}
                   >
-                    Kép feltöltése vagy készítése
+                    Kép feltöltése
                   </Typography>
 
                   {!previewUrl && (
