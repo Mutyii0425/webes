@@ -193,15 +193,35 @@ const startServer = async () => {
   });
 
 
-const keyFilePath = path.resolve('./vision-api-key.json');
-console.log('Vision API kulcs elérési útja:', keyFilePath);
+  const keyFilePath = path.resolve('./vision-api-key.json');
+  console.log('Vision API kulcs elérési útja:', keyFilePath);
+  console.log('Fájl létezik:', fs.existsSync(keyFilePath));
+  
+  // Ha létezik, kiírjuk a tartalmát (csak fejlesztési célokra)
+  if (fs.existsSync(keyFilePath)) {
+    try {
+      const keyContent = fs.readFileSync(keyFilePath, 'utf8');
+      console.log('Kulcsfájl tartalma (első 50 karakter):', keyContent.substring(0, 50) + '...');
+    } catch (readError) {
+      console.error('Hiba a kulcsfájl olvasásakor:', readError);
+    }
+  }
 
 
+console.log('GOOGLE_APPLICATION_CREDENTIALS környezeti változó:', process.env.GOOGLE_APPLICATION_CREDENTIALS);
+
+// Próbáljuk meg használni a környezeti változót
 let visionClient;
 try {
-  visionClient = new ImageAnnotatorClient({
-    keyFilename: keyFilePath
-  });
+  if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+    console.log('Környezeti változó használata a Vision API-hoz');
+    visionClient = new vision.ImageAnnotatorClient();
+  } else {
+    console.log('Kulcsfájl közvetlen használata');
+    visionClient = new vision.ImageAnnotatorClient({
+      keyFilename: './vision-api-key1.json'
+    });
+  }
   console.log('Vision API kliens sikeresen inicializálva');
 } catch (error) {
   console.error('Hiba a Vision API kliens inicializálásakor:', error);
