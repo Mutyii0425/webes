@@ -376,7 +376,7 @@ class CouponModel {
           u.f_azonosito as userId,
           u.felhasznalonev as username,
           u.email_kupon as description,
-          SUBSTRING_INDEX(u.email_kupon, ':', -1) as code,
+          u.email_kupon_kod as code,
           u.email_kupon_hasznalva as isUsed,
           u.email_kupon_lejar as expiryDate,
           u.reg_datum as createdAt,
