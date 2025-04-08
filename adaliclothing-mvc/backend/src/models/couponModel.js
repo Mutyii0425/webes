@@ -360,8 +360,12 @@ class CouponModel {
           u.reg_datum as createdAt,
           'registration' as type,
           CASE 
-          WHEN u.kupon = '15% kedvezmény' THEN 15
-          ELSE 0
+            WHEN u.kupon LIKE '%5%' THEN 5
+            WHEN u.kupon LIKE '%10%' THEN 10
+            WHEN u.kupon LIKE '%15%' THEN 15
+            WHEN u.kupon LIKE '%20%' THEN 20
+            WHEN u.kupon LIKE '%25%' THEN 25
+            ELSE 0
           END as discount
         FROM user u
         WHERE u.kupon IS NOT NULL
@@ -377,13 +381,9 @@ class CouponModel {
           u.email_kupon_lejar as expiryDate,
           u.reg_datum as createdAt,
           'email' as type,
-          CASE 
-            WHEN u.email_kupon LIKE '%5%' THEN 5
-            WHEN u.email_kupon LIKE '%10%' THEN 10
-            WHEN u.email_kupon LIKE '%15%' THEN 15
-            WHEN u.email_kupon LIKE '%20%' THEN 20
-            WHEN u.email_kupon LIKE '%25%' THEN 25
-            ELSE 0
+         CASE 
+          WHEN u.kupon = '15% kedvezmény' THEN 15
+          ELSE 0
           END as discount
         FROM user u
         WHERE u.email_kupon IS NOT NULL
