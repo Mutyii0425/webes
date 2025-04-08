@@ -171,6 +171,76 @@ class OrderController {
             })
           }
         }
+
+        async getAllOrders(req, res) {
+          try {
+            const orders = await this.orderModel.getAllOrders();
+            res.json(orders);
+          } catch (error) {
+            console.error('Error in getAllOrders controller:', error);
+            res.status(500).json({ error: 'Server error when fetching orders' });
+          }
+        }
+        
+        // Egy vevő adatainak lekérdezése
+        async getCustomerById(req, res) {
+          try {
+            const customerId = req.params.id;
+            
+            if (!customerId) {
+              return res.status(400).json({ error: 'Customer ID is required' });
+            }
+            
+            const customer = await this.orderModel.getCustomerById(customerId);
+            
+            if (!customer) {
+              return res.status(404).json({ error: 'Customer not found' });
+            }
+            
+            res.json(customer);
+          } catch (error) {
+            console.error('Error in getCustomerById controller:', error);
+            res.status(500).json({ error: 'Server error when fetching customer' });
+          }
+        }
+        
+        // Rendelés státuszának frissítése
+        async updateOrderStatus(req, res) {
+          try {
+            const orderId = req.params.id;
+            const { status } = req.body;
+            
+            if (!orderId) {
+              return res.status(400).json({ error: 'Order ID is required' });
+            }
+            
+            if (!status) {
+              return res.status(400).json({ error: 'Status is required' });
+            }
+            
+            const result = await this.orderModel.updateOrderStatus(orderId, status);
+            
+            if (!result.success) {
+              return res.status(404).json({ error: result.message });
+            }
+            
+            res.json({ message: result.message });
+          } catch (error) {
+            console.error('Error in updateOrderStatus controller:', error);
+            res.status(500).json({ error: 'Server error when updating order status' });
+          }
+        }
+        
+        // Rendelési statisztikák lekérdezése
+        async getOrderStatistics(req, res) {
+          try {
+            const stats = await this.orderModel.getOrderStats();
+            res.json(stats);
+          } catch (error) {
+            console.error('Error in getOrderStatistics controller:', error);
+            res.status(500).json({ error: 'Server error when fetching order statistics' });
+          }
+        }
 }
 
 export default OrderController

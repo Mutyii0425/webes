@@ -21,5 +21,17 @@ export default (orderController) => {
   router.post('/api/orders/create', (req, res) => orderController.createOrder(req, res));
 
 
+  router.get('/api/orders', orderController.getAllOrders.bind(orderController));
+
+
+  router.get('/api/customers/:id', orderController.getCustomerById.bind(orderController));
+
+
+  router.put('/api/orders/:id/status', orderController.updateOrderStatus.bind(orderController));
+
+  
+  router.get('/api/orders/statistics', orderController.getOrderStatistics.bind(orderController));
+
+
   return router;
 };

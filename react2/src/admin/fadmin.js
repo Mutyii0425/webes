@@ -37,20 +37,20 @@ import MenuIcon from '@mui/icons-material/Menu';
 import EmailIcon from '@mui/icons-material/Email';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import HistoryIcon from '@mui/icons-material/History';
+import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
+import Radio from '@mui/material/Radio';
+import Tooltip from '@mui/material/Tooltip';
 import Menu from '../menu2';
 
 export default function Fadmin() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
-  
   const [users, setUsers] = useState([]);
   const [sideMenuActive, setSideMenuActive] = useState(false);
   const [isSendingCoupons, setIsSendingCoupons] = useState(false);
   const [couponResult, setCouponResult] = useState(null);
   const navigate = useNavigate();
-  
-  // Új állapotok a felhasználók kiválasztásához és a kuponok küldéséhez
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [couponDialogOpen, setCouponDialogOpen] = useState(false);
   const [expiryDays, setExpiryDays] = useState(30);
@@ -59,11 +59,16 @@ export default function Fadmin() {
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const [allCouponDialogOpen, setAllCouponDialogOpen] = useState(false);
   const [allExpiryDays, setAllExpiryDays] = useState(30);
-  
-  // Új állapotok a kuponok kezeléséhez
   const [activeTab, setActiveTab] = useState(0);
   const [couponHistory, setCouponHistory] = useState([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [orders, setOrders] = useState([]);
+  const [isLoadingOrders, setIsLoadingOrders] = useState(false);
+  const [orderStatusFilter, setOrderStatusFilter] = useState('all');
+  const [orderStatusOptions] = useState(['Feldolgozás alatt', 'Csomagolás', 'Szállítás alatt', 'Kézbesítve', 'Törölve']);
+  const [orderStatusDialogOpen, setOrderStatusDialogOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [newOrderStatus, setNewOrderStatus] = useState('');
   const [couponStats, setCouponStats] = useState({
     totalCoupons: 0,
     usedCoupons: 0,
@@ -297,6 +302,7 @@ export default function Fadmin() {
     fetchUsers();
     fetchCouponStats();
     fetchCouponHistory();
+    fetchOrders();
   }, []);
 
   const handleDelete = async (userId) => {
@@ -319,6 +325,83 @@ export default function Fadmin() {
         console.log('Törlési hiba:', error);
       }
     }
+  };
+
+  const fetchOrders = async () => {
+    setIsLoadingOrders(true);
+    try {
+      const response = await fetch('https://adaliclothing.onrender.com/api/orders');
+      
+      if (response.ok) {
+        const ordersData = await response.json();
+        
+        // Vevő adatok lekérése minden rendeléshez
+        const ordersWithCustomerDetails = await Promise.all(ordersData.map(async (order) => {
+          try {
+            const customerResponse = await fetch(`https://adaliclothing.onrender.com/api/customers/${order.vevo_id}`);
+            
+            if (customerResponse.ok) {
+              const customer = await customerResponse.json();
+              return { ...order, customer };
+            }
+            
+            return order;
+          } catch (error) {
+            console.error(`Hiba a vevő adatok lekérésekor (${order.id}):`, error);
+            return order;
+          }
+        }));
+        
+        setOrders(ordersWithCustomerDetails);
+      }
+    } catch (error) {
+      console.error('Hiba a rendelések lekérésekor:', error);
+    } finally {
+      setIsLoadingOrders(false);
+    }
+  };
+
+  const updateOrderStatus = async () => {
+    if (!selectedOrder || !newOrderStatus) return;
+    
+    try {
+      const response = await fetch(`https://adaliclothing.onrender.com/api/orders/${selectedOrder.id}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: newOrderStatus })
+      });
+      
+      if (response.ok) {
+        // Frissítsük a rendelések listáját
+        setOrders(orders.map(order => 
+          order.id === selectedOrder.id ? { ...order, statusz: newOrderStatus } : order
+        ));
+        
+        setSnackbarMessage('Rendelés státusza sikeresen frissítve!');
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
+      } else {
+        const errorData = await response.json();
+        setSnackbarMessage(errorData.error || 'Hiba történt a státusz frissítésekor');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+      }
+    } catch (error) {
+      console.error('Hiba a státusz frissítésekor:', error);
+      setSnackbarMessage('Hálózati hiba történt a státusz frissítésekor');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    } finally {
+      setOrderStatusDialogOpen(false);
+    }
+  };
+
+  const handleOpenStatusDialog = (order) => {
+    setSelectedOrder(order);
+    setNewOrderStatus(order.statusz || '');
+    setOrderStatusDialogOpen(true);
   };
 
   const toggleSideMenu = () => {
@@ -406,6 +489,11 @@ export default function Fadmin() {
             <Tab 
               label={isMobile ? "Történet" : "Kupon Történet"} 
               icon={<HistoryIcon fontSize={isMobile ? "small" : "medium"} />} 
+              iconPosition="start" 
+            />
+            <Tab 
+              label={isMobile ? "Rendelések" : "Rendelések kezelése"} 
+              icon={<ShoppingBasketIcon fontSize={isMobile ? "small" : "medium"} />} 
               iconPosition="start" 
             />
           </Tabs>
@@ -825,6 +913,418 @@ export default function Fadmin() {
                           </Box>
                         </Box>
                       )}
+
+{activeTab === 3 && (
+  <Box sx={{ color: 'white' }}>
+    <Typography variant="h4" gutterBottom sx={{ 
+      fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' } 
+    }}>
+      Rendelések kezelése
+    </Typography>
+    
+    <Box sx={{ 
+      display: 'flex', 
+      flexDirection: { xs: 'column', sm: 'row' }, 
+      justifyContent: 'space-between',
+      alignItems: { xs: 'flex-start', sm: 'center' },
+      mb: 3,
+      gap: 2
+    }}>
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: { xs: 'column', sm: 'row' }, 
+        gap: 2,
+        alignItems: { xs: 'flex-start', sm: 'center' }
+      }}>
+        <Typography variant="body1" sx={{ 
+          fontSize: { xs: '0.875rem', sm: '1rem' } 
+        }}>
+          Szűrés státusz szerint:
+        </Typography>
+        <Box sx={{ 
+          display: 'flex', 
+          flexWrap: 'wrap', 
+          gap: 1 
+        }}>
+          <Chip 
+            label="Összes" 
+            color={orderStatusFilter === 'all' ? 'primary' : 'default'} 
+            onClick={() => setOrderStatusFilter('all')}
+            clickable
+          />
+          {orderStatusOptions.map(status => (
+            <Chip 
+              key={status}
+              label={status} 
+              color={orderStatusFilter === status ? 'primary' : 'default'} 
+              onClick={() => setOrderStatusFilter(status)}
+              clickable
+            />
+          ))}
+        </Box>
+      </Box>
+      
+      <Button 
+        variant="contained" 
+        color="primary" 
+        onClick={fetchOrders}
+        disabled={isLoadingOrders}
+        startIcon={isLoadingOrders ? <CircularProgress size={20} color="inherit" /> : null}
+        size={isMobile ? "small" : "medium"}
+      >
+        {isLoadingOrders ? "Betöltés..." : "Frissítés"}
+      </Button>
+    </Box>
+    
+    {isLoadingOrders ? (
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+        <CircularProgress />
+      </Box>
+    ) : orders.length === 0 ? (
+      <Alert severity="info" sx={{ mt: 2 }}>
+        Nincsenek rendelések az adatbázisban.
+      </Alert>
+    ) : (
+      <TableContainer 
+        component={Paper} 
+        sx={{ 
+          mt: 3,
+          overflowX: 'auto'
+        }}
+      >
+        <Table size={isMobile ? "small" : "medium"}>
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ 
+                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
+              }}>Rendelés ID</TableCell>
+              <TableCell sx={{ 
+                display: { xs: 'none', sm: 'table-cell' },
+                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
+              }}>Dátum</TableCell>
+              <TableCell sx={{ 
+                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
+              }}>Vevő</TableCell>
+              <TableCell sx={{ 
+                display: { xs: 'none', md: 'table-cell' },
+                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
+              }}>Termék</TableCell>
+              <TableCell sx={{ 
+                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
+              }}>Mennyiség</TableCell>
+              <TableCell sx={{ 
+                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
+              }}>Ár</TableCell>
+              <TableCell sx={{ 
+                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
+              }}>Státusz</TableCell>
+              <TableCell sx={{ 
+                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
+              }}>Műveletek</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {orders
+              .filter(order => orderStatusFilter === 'all' || order.statusz === orderStatusFilter)
+              .map((order) => (
+                <TableRow key={order.id}>
+                  <TableCell sx={{ 
+                    fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
+                  }}>{order.id}</TableCell>
+                  <TableCell sx={{ 
+                    display: { xs: 'none', sm: 'table-cell' },
+                    fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
+                  }}>{new Date(order.datum).toLocaleDateString()}</TableCell>
+                  <TableCell sx={{ 
+                    fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
+                  }}>
+                    {order.customer ? (
+                      <Tooltip title={
+                        <Box>
+                          <Typography variant="body2">Email: {order.customer.email}</Typography>
+                          <Typography variant="body2">Tel: {order.customer.telefonszam}</Typography>
+                          <Typography variant="body2">
+                            Cím: {order.customer.irsz}, {order.customer.telepules}, {order.customer.kozterulet}
+                          </Typography>
+                          <Typography variant="body2">Fizetési mód: {order.customer.fizetesi_mod}</Typography>
+                        </Box>
+                      }>
+                        <span>{order.customer.nev}</span>
+                      </Tooltip>
+                    ) : (
+                      `Vevő ID: ${order.vevo_id}`
+                    )}
+                  </TableCell>
+                  <TableCell sx={{ 
+                    display: { xs: 'none', md: 'table-cell' },
+                    fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
+                  }}>{order.termek}</TableCell>
+                  <TableCell sx={{ 
+                    fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
+                  }}>{order.mennyiseg}</TableCell>
+                  <TableCell sx={{ 
+                    fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
+                  }}>{order.ar.toLocaleString()} Ft</TableCell>
+                  <TableCell sx={{ 
+                    fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
+                  }}>
+                    <Chip 
+                      label={order.statusz || 'Feldolgozás alatt'} 
+                      color={
+                        order.statusz === 'Kézbesítve' ? 'success' :
+                        order.statusz === 'Törölve' ? 'error' :
+                        order.statusz === 'Szállítás alatt' ? 'primary' :
+                        'warning'
+                      } 
+                      size="small" 
+                    />
+                  </TableCell>
+                  <TableCell>
+                  <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() => handleOpenStatusDialog(order)}
+                      sx={{ 
+                        fontSize: { xs: '0.65rem', sm: '0.7rem', md: '0.75rem' } 
+                      }}
+                    >
+                      Státusz módosítása
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    )}
+    
+    {/* Részletes nézet vagy statisztikák hozzáadása */}
+    <Box sx={{ mt: 4 }}>
+      <Typography variant="h5" gutterBottom sx={{ 
+        fontSize: { xs: '1.2rem', sm: '1.4rem', md: '1.5rem' } 
+      }}>
+        Rendelési statisztikák
+      </Typography>
+      
+      <Grid container spacing={{ xs: 1, sm: 2, md: 3 }} sx={{ mt: 1 }}>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card sx={{ 
+            backgroundColor: '#1976d2',
+            color: 'white',
+            transition: 'transform 0.3s ease',
+            '&:hover': {
+              transform: 'translateY(-5px)',
+              boxShadow: '0 10px 20px rgba(0,0,0,0.2)'
+            }
+          }}>
+            <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
+              <Typography variant="h6" gutterBottom sx={{ 
+                fontSize: { xs: '0.9rem', sm: '1rem', md: '1.25rem' } 
+              }}>
+                Összes rendelés
+              </Typography>
+              <Typography variant="h3" sx={{ 
+                fontSize: { xs: '1.5rem', sm: '2rem', md: '3rem' } 
+              }}>
+                {orders.length}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        
+        <Grid item xs={12} sm={6} md={3}>
+          <Card sx={{ 
+            backgroundColor: '#4caf50',
+            color: 'white',
+            transition: 'transform 0.3s ease',
+            '&:hover': {
+              transform: 'translateY(-5px)',
+              boxShadow: '0 10px 20px rgba(0,0,0,0.2)'
+            }
+          }}>
+            <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
+              <Typography variant="h6" gutterBottom sx={{ 
+                fontSize: { xs: '0.9rem', sm: '1rem', md: '1.25rem' } 
+              }}>
+                Kézbesített
+              </Typography>
+              <Typography variant="h3" sx={{ 
+                fontSize: { xs: '1.5rem', sm: '2rem', md: '3rem' } 
+              }}>
+                {orders.filter(order => order.statusz === 'Kézbesítve').length}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        
+        <Grid item xs={12} sm={6} md={3}>
+          <Card sx={{ 
+            backgroundColor: '#ff9800',
+            color: 'white',
+            transition: 'transform 0.3s ease',
+            '&:hover': {
+              transform: 'translateY(-5px)',
+              boxShadow: '0 10px 20px rgba(0,0,0,0.2)'
+            }
+          }}>
+            <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
+              <Typography variant="h6" gutterBottom sx={{ 
+                fontSize: { xs: '0.9rem', sm: '1rem', md: '1.25rem' } 
+              }}>
+                Folyamatban
+              </Typography>
+              <Typography variant="h3" sx={{ 
+                fontSize: { xs: '1.5rem', sm: '2rem', md: '3rem' } 
+              }}>
+                {orders.filter(order => 
+                  order.statusz !== 'Kézbesítve' && order.statusz !== 'Törölve'
+                ).length}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        
+        <Grid item xs={12} sm={6} md={3}>
+          <Card sx={{ 
+            backgroundColor: '#f44336',
+            color: 'white',
+            transition: 'transform 0.3s ease',
+            '&:hover': {
+              transform: 'translateY(-5px)',
+              boxShadow: '0 10px 20px rgba(0,0,0,0.2)'
+            }
+          }}>
+            <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
+              <Typography variant="h6" gutterBottom sx={{ 
+                fontSize: { xs: '0.9rem', sm: '1rem', md: '1.25rem' } 
+              }}>
+                Törölve
+              </Typography>
+              <Typography variant="h3" sx={{ 
+                fontSize: { xs: '1.5rem', sm: '2rem', md: '3rem' } 
+              }}>
+                {orders.filter(order => order.statusz === 'Törölve').length}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+      
+      {/* Bevétel statisztika */}
+      <Box sx={{ mt: 3 }}>
+        <Card sx={{ 
+          backgroundColor: '#9c27b0',
+          color: 'white',
+          transition: 'transform 0.3s ease',
+          '&:hover': {
+            transform: 'translateY(-5px)',
+            boxShadow: '0 10px 20px rgba(0,0,0,0.2)'
+          }
+        }}>
+          <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
+            <Typography variant="h6" gutterBottom sx={{ 
+              fontSize: { xs: '0.9rem', sm: '1rem', md: '1.25rem' } 
+            }}>
+              Összes bevétel
+            </Typography>
+            <Typography variant="h3" sx={{ 
+              fontSize: { xs: '1.5rem', sm: '2rem', md: '3rem' } 
+            }}>
+              {orders
+                .filter(order => order.statusz !== 'Törölve')
+                .reduce((total, order) => total + (order.ar || 0), 0)
+                .toLocaleString()} Ft
+            </Typography>
+          </CardContent>
+        </Card>
+      </Box>
+    </Box>
+  </Box>
+)}
+
+{/* Státusz módosítás dialógus */}
+<Dialog 
+  open={orderStatusDialogOpen} 
+  onClose={() => setOrderStatusDialogOpen(false)}
+  maxWidth="sm"
+  fullWidth
+  PaperProps={{
+    sx: {
+      width: { xs: '95%', sm: '80%', md: '60%' },
+      maxWidth: '500px'
+    }
+  }}
+>
+  <DialogTitle sx={{ 
+    fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' } 
+  }}>
+    Rendelés státuszának módosítása
+  </DialogTitle>
+  <DialogContent>
+    {selectedOrder && (
+      <>
+        <Typography variant="body1" gutterBottom sx={{ 
+          fontSize: { xs: '0.875rem', sm: '1rem' } 
+        }}>
+          Rendelés azonosító: {selectedOrder.id}
+        </Typography>
+        
+        <Typography variant="body2" color="textSecondary" gutterBottom sx={{ 
+          fontSize: { xs: '0.75rem', sm: '0.875rem' } 
+        }}>
+          Jelenlegi státusz: {selectedOrder.statusz || 'Feldolgozás alatt'}
+        </Typography>
+        
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="body2" gutterBottom sx={{ 
+            fontSize: { xs: '0.75rem', sm: '0.875rem' } 
+          }}>
+            Új státusz kiválasztása:
+          </Typography>
+          
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            gap: 1, 
+            mt: 1 
+          }}>
+            {orderStatusOptions.map(status => (
+              <FormControlLabel
+                key={status}
+                control={
+                  <Radio
+                    checked={newOrderStatus === status}
+                    onChange={() => setNewOrderStatus(status)}
+                    value={status}
+                    name="order-status-radio"
+                  />
+                }
+                label={status}
+              />
+            ))}
+          </Box>
+        </Box>
+      </>
+    )}
+  </DialogContent>
+  <DialogActions>
+    <Button 
+      onClick={() => setOrderStatusDialogOpen(false)}
+      size={isMobile ? "small" : "medium"}
+    >
+      Mégse
+    </Button>
+    <Button 
+      onClick={updateOrderStatus}
+      color="primary"
+      disabled={!newOrderStatus || newOrderStatus === selectedOrder?.statusz}
+      size={isMobile ? "small" : "medium"}
+    >
+      Státusz módosítása
+    </Button>
+  </DialogActions>
+</Dialog>
+
                       <Button
           onClick={() => navigate('/admin')}
           variant="contained"
