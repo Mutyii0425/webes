@@ -26,16 +26,16 @@ class OrderModel {
   }
 
   async getAllOrders() {
-  try {
-    const [rows] = await this.db.execute(
-      'SELECT * FROM rendeles ORDER BY datum DESC'
-    );
-    return rows;
-  } catch (error) {
-    console.error('Error fetching all orders:', error);
-    throw new Error('Database error when fetching orders');
+    try {
+      const [rows] = await this.db.execute(
+        'SELECT * FROM rendeles ORDER BY date DESC'
+      );
+      return rows;
+    } catch (error) {
+      console.error('Error fetching all orders:', error);
+      throw new Error('Database error when fetching orders');
+    }
   }
-}
 
 // Egy vevő adatainak lekérdezése
 async getCustomerById(customerId) {

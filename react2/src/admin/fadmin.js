@@ -1034,7 +1034,7 @@ export default function Fadmin() {
                   <TableCell sx={{ 
                     display: { xs: 'none', sm: 'table-cell' },
                     fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
-                  }}>{new Date(order.datum).toLocaleDateString()}</TableCell>
+                  }}>{new Date(order.date).toLocaleDateString()}</TableCell>
                   <TableCell sx={{ 
                     fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
                   }}>
