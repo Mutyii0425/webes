@@ -381,9 +381,11 @@ class CouponModel {
           u.email_kupon_lejar as expiryDate,
           u.reg_datum as createdAt,
           'email' as type,
-         CASE 
-          WHEN u.kupon = '15% kedvezmény' THEN 15
-          ELSE 0
+          CASE 
+           
+            WHEN u.email_kupon LIKE '%15%' THEN 15
+      
+            ELSE 0
           END as discount
         FROM user u
         WHERE u.email_kupon IS NOT NULL
