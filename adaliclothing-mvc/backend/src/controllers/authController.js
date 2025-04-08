@@ -139,7 +139,7 @@ class AuthController {
               html: `
                 <h2>Jelszó visszaállítás</h2>
                 <p>A jelszavad visszaállításához kattints az alábbi linkre:</p>
-                <a href="http://localhost:3000/reset-password/${resetToken}">Jelszó visszaállítása</a>
+                <a href="https://adaliclothing.vercel.app/reset-password/${resetToken}">Jelszó visszaállítása</a>
                 <p>Ez a link 1 óráig érvényes.</p>
                 <p>Ha nem te kérted a jelszó visszaállítását, hagyd figyelmen kívül ezt az emailt.</p>
                 <p>Üdvözlettel,<br>Az Adali Clothing csapata</p>

@@ -75,12 +75,12 @@ const PersonalStyleAdvisor = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
-  const [cameraActive, setCameraActive] = useState(false);
+  
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
   const [infoDialogOpen, setInfoDialogOpen] = useState(false);
   const [resultDialogOpen, setResultDialogOpen] = useState(false);
-  const videoRef = useRef(null);
-  const canvasRef = useRef(null);
+  
+  
    const isExtraSmall = useMediaQuery('(max-width:400px)');
   const fileInputRef = useRef(null);
   const [sideMenuActive, setSideMenuActive] = useState(false);
@@ -189,10 +189,7 @@ const PersonalStyleAdvisor = () => {
       setError('');
       
       // Ha a kamera aktív, leállítjuk
-      if (cameraActive) {
-        stopCamera();
-      }
-      
+     
       setSnackbar({
         open: true,
         message: 'Kép sikeresen kiválasztva!',
@@ -201,83 +198,7 @@ const PersonalStyleAdvisor = () => {
     }
   };
 
-  // Kamera indítása
-  const startCamera = async () => {
-    try {
-      setCameraActive(true);
-      setSelectedFile(null);
-      setPreviewUrl('');
-      setResult(null);
-      setError('');
-      
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' } 
-      });
-      
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-      
-      setSnackbar({
-        open: true,
-        message: 'Kamera aktiválva. Készíts egy képet!',
-        severity: 'info'
-      });
-    } catch (err) {
-      console.error('Kamera hiba:', err);
-      setError('Nem sikerült hozzáférni a kamerához: ' + err.message);
-      setCameraActive(false);
-      
-      setSnackbar({
-        open: true,
-        message: 'Nem sikerült hozzáférni a kamerához',
-        severity: 'error'
-      });
-    }
-  };
-
-  // Kamera leállítása
-  const stopCamera = () => {
-    if (videoRef.current && videoRef.current.srcObject) {
-      const tracks = videoRef.current.srcObject.getTracks();
-      tracks.forEach(track => track.stop());
-      videoRef.current.srcObject = null;
-    }
-    setCameraActive(false);
-  };
-
-  // Kép készítése a kamerával
-  const captureImage = () => {
-    if (!videoRef.current || !canvasRef.current) return;
-    
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    
-    // Canvas méretének beállítása a videó méretére
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    
-    // Kép rajzolása a canvas-ra
-    const context = canvas.getContext('2d');
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    
-    // Canvas konvertálása base64 képpé
-    const imageDataUrl = canvas.toDataURL('image/jpeg');
-    setPreviewUrl(imageDataUrl);
-    
-    // Kamera leállítása
-    stopCamera();
-    
-    // Eredmények törlése
-    setResult(null);
-    
-    setSnackbar({
-      open: true,
-      message: 'Kép sikeresen elkészítve!',
-      severity: 'success'
-    });
-  };
-
+ 
   // Kép elemzése
   const analyzeImage = async () => {
     console.log('Kép elemzése kezdődik a frontend oldalon...');
@@ -838,106 +759,51 @@ response = await fetch('https://adaliclothing.onrender.com/api/style/analyze-per
                     Kép feltöltése vagy készítése
                   </Typography>
 
-                  {!cameraActive && !previewUrl && (
-                    <Box 
-                      sx={{ 
-                        border: '2px dashed',
-                        borderColor: darkMode ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)',
-                        borderRadius: 2,
-                        p: 4,
-                        textAlign: 'center',
-                        mb: 3,
-                        backgroundColor: darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)',
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          borderColor: primaryColor,
-                          backgroundColor: darkMode ? 'rgba(144, 202, 249, 0.1)' : 'rgba(25, 118, 210, 0.05)'
-                        }
-                      }}
-                    >
-                      <Input
-                        ref={fileInputRef}
-                        accept="image/*"
-                        id="contained-button-file"
-                        type="file"
-                        onChange={handleFileChange}
-                      />
-                      <label htmlFor="contained-button-file">
-                        <Button
-                          variant="contained"
-                          component="span"
-                          startIcon={<CloudUploadIcon />}
-                          sx={{ 
-                            mb: 2,
-                            backgroundColor: primaryColor,
-                            '&:hover': {
-                              backgroundColor: darkMode ? '#42a5f5' : '#115293'
-                            }
-                          }}
-                        >
-                          Kép feltöltése
-                        </Button>
-                      </label>
-                      <Typography variant="body2" sx={{ color: darkMode ? '#aaa' : '#666' }}>
-                        vagy
-                      </Typography>
-                      <Button
-                        variant="outlined"
-                        onClick={startCamera}
-                        startIcon={<PhotoCameraIcon />}
-                        sx={{ 
-                          mt: 2,
-                          borderColor: primaryColor,
-                          color: primaryColor,
-                          '&:hover': {
-                            borderColor: darkMode ? '#42a5f5' : '#115293',
-                            backgroundColor: darkMode ? 'rgba(144, 202, 249, 0.1)' : 'rgba(25, 118, 210, 0.05)'
-                          }
-                        }}
-                      >
-                        Kamera használata
-                      </Button>
-                    </Box>
-                  )}
+                  {!previewUrl && (
+  <Box
+    sx={{
+      border: '2px dashed',
+      borderColor: darkMode ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)',
+      borderRadius: 2,
+      p: 4,
+      textAlign: 'center',
+      mb: 3,
+      backgroundColor: darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)',
+      transition: 'all 0.3s ease',
+      '&:hover': {
+        borderColor: primaryColor,
+        backgroundColor: darkMode ? 'rgba(144, 202, 249, 0.1)' : 'rgba(25, 118, 210, 0.05)'
+      }
+    }}
+  >
+    <Input
+      ref={fileInputRef}
+      accept="image/*"
+      id="contained-button-file"
+      type="file"
+      onChange={handleFileChange}
+    />
+    <label htmlFor="contained-button-file">
+      <Button
+        variant="contained"
+        component="span"
+        startIcon={<CloudUploadIcon />}
+        sx={{
+          mb: 2,
+          backgroundColor: primaryColor,
+          '&:hover': {
+            backgroundColor: darkMode ? '#42a5f5' : '#115293'
+          }
+        }}
+      >
+        Kép feltöltése
+      </Button>
+    </label>
+  </Box>
+)}
 
-                  {cameraActive && (
-                    <Box sx={{ textAlign: 'center', mb: 3 }}>
-                      <video
-                        ref={videoRef}
-                        autoPlay
-                        playsInline
-                        style={{ 
-                          width: '100%', 
-                          maxHeight: 400, 
-                          borderRadius: 8,
-                          boxShadow: darkMode ? '0 4px 12px rgba(0,0,0,0.4)' : '0 4px 12px rgba(0,0,0,0.1)'
-                        }}
-                      />
-                      <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center', gap: 2 }}>
-                        <Button
-                          variant="contained"
-                          onClick={captureImage}
-                          startIcon={<PhotoCameraIcon />}
-                          sx={{ 
-                            backgroundColor: '#4caf50',
-                            '&:hover': {
-                              backgroundColor: '#388e3c'
-                            }
-                          }}
-                        >
-                          Kép készítése
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          onClick={stopCamera}
-                          color="error"
-                        >
-                          Mégse
-                        </Button>
-                      </Box>
-                      <canvas ref={canvasRef} style={{ display: 'none' }} />
-                    </Box>
-                  )}
+
+                 
 
                   {previewUrl && (
                     <Box sx={{ textAlign: 'center', mb: 3 }}>
