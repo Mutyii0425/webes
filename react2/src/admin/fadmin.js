@@ -1232,7 +1232,7 @@ export default function Fadmin() {
             }}>
               {orders
                 .filter(order => order.statusz !== 'Törölve')
-                .reduce((total, order) => total + (order.ar || 0), 0)
+                .reduce((total, order) => total + (Number(order.ar) || 0), 0)
                 .toLocaleString()} Ft
             </Typography>
           </CardContent>
