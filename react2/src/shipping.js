@@ -445,7 +445,7 @@ const saveRatingToDatabase = async (rating, comment) => {
     if (response.ok) {
       console.log('Értékelés sikeresen mentve');
       
-      // Fizetési mód alapján navigálunk
+
       if (orderData.fizetesi_mod === 'kartya') {
         navigate('/payment-simulation', { 
           state: { 
@@ -467,7 +467,7 @@ const saveRatingToDatabase = async (rating, comment) => {
       return true;
     } else {
       console.error('Hiba az értékelés mentésekor:', responseData.error);
-      // Hiba esetén is irányítsuk át a felhasználót a megfelelő oldalra
+     
       if (orderData.fizetesi_mod === 'kartya') {
         navigate('/payment-simulation', { 
           state: { 
@@ -490,7 +490,7 @@ const saveRatingToDatabase = async (rating, comment) => {
     }
   } catch (error) {
     console.error('Hiba az értékelés mentésekor:', error);
-    // Hiba esetén is irányítsuk át a felhasználót a megfelelő oldalra
+    
     if (orderData.fizetesi_mod === 'kartya') {
       navigate('/payment-simulation', { 
         state: { 
@@ -559,11 +559,11 @@ const saveRatingToDatabase = async (rating, comment) => {
     if (userData) {
       const user = JSON.parse(userData);
       
-      // Először ellenőrizzük a regisztrációs kupont
+   
       if (user.kupon && !user.kupon_hasznalva) {
-        // MÓDOSÍTÁS KEZDETE - Regisztrációs kupon
+       
         if (user.kupon.includes('%')) {
-          // Kinyerjük a kedvezmény mértékét
+    
           const discountMatch = user.kupon.match(/(\d+)%/);
           if (discountMatch && discountMatch[1]) {
             const discountAmount = parseInt(discountMatch[1]);
@@ -575,13 +575,13 @@ const saveRatingToDatabase = async (rating, comment) => {
             });
           }
         }
-        // MÓDOSÍTÁS VÉGE
+       
       } 
-      // Ha nincs érvényes regisztrációs kupon, ellenőrizzük az email kupont
+    
       else if (user.email_kupon && !user.email_kupon_hasznalva) {
-        // MÓDOSÍTÁS KEZDETE - Email kupon
+     
         if (user.email_kupon.includes('%')) {
-          // Kinyerjük a kedvezmény mértékét
+       
           const discountMatch = user.email_kupon.match(/(\d+)%/);
           if (discountMatch && discountMatch[1]) {
             const discountAmount = parseInt(discountMatch[1]);
@@ -593,9 +593,9 @@ const saveRatingToDatabase = async (rating, comment) => {
             });
           }
         }
-        // MÓDOSÍTÁS VÉGE
+      
       }
-      // Ha egyik kupon sem érvényes
+     
       else {
         setCouponStatus({ 
           available: false, 
@@ -616,8 +616,7 @@ const saveRatingToDatabase = async (rating, comment) => {
         return;
       }
       
-      // Ellenőrizd a helyes végpontot a backend kódban
-      // Módosítsd az alábbi URL-t a megfelelő végpontra
+  
       const response = await fetch(`https://adaliclothing.onrender.com/api/coupons/user-coupons/${userData.f_azonosito}`);
       
       if (!response.ok) {
@@ -625,20 +624,18 @@ const saveRatingToDatabase = async (rating, comment) => {
       }
       
       const data = await response.json();
-      
-      // Frissítjük a localStorage-ban tárolt felhasználói adatokat
+  
       if (data && data.length > 0) {
-        // Először ellenőrizzük a regisztrációs kupont
+ 
         const activeRegCoupon = data.find(c => 
           c.type === 'registration' && !c.isUsed && !c.isExpired
         );
         
-        // Aztán ellenőrizzük az email kupont
+   
         const activeEmailCoupon = data.find(c => 
           c.type === 'email' && !c.isUsed && !c.isExpired
         );
-        
-        // Frissítjük a felhasználói adatokat
+   
         if (activeRegCoupon) {
           userData.kupon = `${activeRegCoupon.discountValue}% kedvezmény: ${activeRegCoupon.code}`;
           userData.kupon_kod = activeRegCoupon.code;
@@ -668,21 +665,21 @@ const saveRatingToDatabase = async (rating, comment) => {
   
 
   useEffect(() => {
-    // Lekérjük a frissített felhasználói adatokat, beleértve a kupon információkat is
+  
     fetchUserCoupons().then(coupons => {
       if (coupons && coupons.length > 0) {
-        // A kupon állapotok frissítése a komponensben
+   
         const activeCoupon = coupons.find(c => !c.isUsed && !c.isExpired);
         
         if (activeCoupon) {
-          // Frissítjük a komponens állapotát
+ 
           setCouponStatus({ 
             available: true, 
             used: false,
             type: activeCoupon.type
           });
           
-          // Beállítjuk a kedvezmény mértékét
+   
           setDiscountPercentage(activeCoupon.discountValue);
         } else {
           setCouponStatus({ 
@@ -1251,7 +1248,7 @@ const saveRatingToDatabase = async (rating, comment) => {
     lineHeight: 1.1,
     borderRadius: '3px',
     letterSpacing: '-0.01em',
-    // Added to ensure content is vertically centered
+ 
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
