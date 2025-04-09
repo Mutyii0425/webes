@@ -534,6 +534,25 @@ useEffect(() => {
     }
   }, [currentImageIndex, isAnimating, images.length]);
 
+  useEffect(() => {
+    // Overflow-x hidden beállítása a teljes dokumentumra
+    document.body.style.overflowX = 'hidden';
+    document.documentElement.style.overflowX = 'hidden';
+    
+    // Viewport meta tag módosítása a skálázás korlátozásához
+    const viewport = document.querySelector('meta[name=viewport]');
+    if (viewport) {
+      viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+    }
+    
+    return () => {
+      // Cleanup: visszaállítjuk az eredeti állapotot
+      document.body.style.overflowX = '';
+      document.documentElement.style.overflowX = '';
+    };
+  }, []);
+  
+
     return (
       <div style={{
         backgroundColor: darkMode ? '#333' : '#f5f5f5',
@@ -543,7 +562,11 @@ useEffect(() => {
         backgroundSize: '20px 20px',
         color: darkMode ? 'white' : 'black',
         minHeight: '100vh',
-        transition: 'all 0.3s ease-in-out' 
+        transition: 'all 0.3s ease-in-out',
+        overflowX: 'hidden',  // Ez a sor a fontos
+        position: 'relative', // Hozzáadjuk a position: relative-ot
+        width: '100%',        // Explicit szélesség beállítása
+        maxWidth: '100vw'     // Maximum szélesség korlátozása
       }}>
 
         <Box
@@ -1568,6 +1591,26 @@ useEffect(() => {
       to {
         opacity: 1;
         transform: translateY(0);
+      }
+    }
+
+     html, body {
+      overflow-x: hidden;
+      position: relative;
+      width: 100%;
+      touch-action: pan-y;
+    }
+    
+    /* Minden konténer elem korlátozása */
+    #root, .MuiBox-root, .MuiContainer-root {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+    
+    /* Horizontális görgetés letiltása érintéses eszközökön */
+    @media (pointer: coarse) {
+      * {
+        touch-action: pan-y;
       }
     }
   `}
