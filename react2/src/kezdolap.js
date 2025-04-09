@@ -535,20 +535,37 @@ useEffect(() => {
   }, [currentImageIndex, isAnimating, images.length]);
 
   useEffect(() => {
-    // Overflow-x hidden beállítása a teljes dokumentumra
+    // Csak a body és html elemekre állítjuk be az overflow-x: hidden-t
     document.body.style.overflowX = 'hidden';
     document.documentElement.style.overflowX = 'hidden';
     
     // Viewport meta tag módosítása a skálázás korlátozásához
     const viewport = document.querySelector('meta[name=viewport]');
     if (viewport) {
-      viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+      viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0';
     }
+    
+    // Megakadályozzuk az alapértelmezett érintés eseményeket az oldalon,
+    // kivéve a vélemények konténerét
+    const preventDefaultTouch = (e) => {
+      // Ha a vélemények konténerén belül vagyunk, ne akadályozzuk meg az eseményt
+      if (e.target.closest('#ratingsContainer')) {
+        return;
+      }
+      
+      // Egyébként akadályozzuk meg a vízszintes görgetést
+      if (Math.abs(e.touches[0].clientX - e.touches[0].screenX) > 5) {
+        e.preventDefault();
+      }
+    };
+    
+    // document.addEventListener('touchmove', preventDefaultTouch, { passive: false });
     
     return () => {
       // Cleanup: visszaállítjuk az eredeti állapotot
       document.body.style.overflowX = '';
       document.documentElement.style.overflowX = '';
+      // document.removeEventListener('touchmove', preventDefaultTouch);
     };
   }, []);
   
@@ -1594,22 +1611,29 @@ useEffect(() => {
       }
     }
 
-     html, body {
+      html, body {
       overflow-x: hidden;
       position: relative;
       width: 100%;
       touch-action: pan-y;
     }
     
-    /* Minden konténer elem korlátozása */
-    #root, .MuiBox-root, .MuiContainer-root {
+    /* Minden konténer elem korlátozása, kivéve a vélemények konténerét */
+    #root, .MuiBox-root:not(#ratingsContainer), .MuiContainer-root {
       max-width: 100%;
       overflow-x: hidden;
     }
     
-    /* Horizontális görgetés letiltása érintéses eszközökön */
+    /* A vélemények konténere maradjon görgethető */
+    #ratingsContainer {
+      overflow-x: auto;
+      touch-action: pan-x;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Horizontális görgetés letiltása érintéses eszközökön, kivéve a vélemények konténerét */
     @media (pointer: coarse) {
-      * {
+      *:not(#ratingsContainer, #ratingsContainer *) {
         touch-action: pan-y;
       }
     }
@@ -1933,6 +1957,7 @@ useEffect(() => {
 </Box>
 
 <Box
+  id="ratingsContainer" // Adjunk hozzá egy ID-t a konténerhez
   ref={contentRef}
   sx={{
     display: 'flex',
@@ -1941,7 +1966,7 @@ useEffect(() => {
       sm: 2.5,     
       md: 3          
     },
-    overflowX: 'auto',
+    overflowX: 'auto', // Ez maradjon auto
     scrollbarWidth: 'none',
     backgroundColor: darkMode ? '#333' : '#f5f5f5',
     backgroundImage: darkMode
@@ -1961,7 +1986,11 @@ useEffect(() => {
       sm: '95%',          
       md: '100%'        
     },
-    margin: '0 auto'   
+    margin: '0 auto',
+    WebkitOverflowScrolling: 'touch', // Jobb görgetési élmény iOS-en
+    touchAction: 'pan-x', // Csak vízszintes görgetés engedélyezése
+    position: 'relative', // Relatív pozíció
+    zIndex: 5 // Magasabb z-index, hogy a görgetés működjön
   }}
 >
   {Array.isArray(ratings) && ratings.map((rating, index) => (
