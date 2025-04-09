@@ -1061,7 +1061,7 @@ export default function Fadmin() {
               <TableCell sx={{
                 display: { xs: 'none', md: 'table-cell' },
                 fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
-              }}>Termék</TableCell>
+              }}>Termék ID</TableCell>
               <TableCell sx={{
                 fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
               }}>Mennyiség</TableCell>
