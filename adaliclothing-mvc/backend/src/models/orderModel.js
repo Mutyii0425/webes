@@ -16,10 +16,11 @@ class OrderModel {
 
   async createOrder(orderData) {
     const { termek, statusz, mennyiseg, vevo_id, ar } = orderData;
+    const teljes_ar = ar * mennyiseg;
     
     const [result] = await this.db.execute(
-      'INSERT INTO rendeles (termek, statusz, mennyiseg, vevo_id, ar) VALUES (?, ?, ?, ?, ?)',
-      [termek, statusz, mennyiseg, vevo_id, ar]
+      'INSERT INTO rendeles (termek, statusz, mennyiseg, vevo_id, egysegar, teljes_ar) VALUES (?, ?, ?, ?, ?, ?)',
+      [termek, statusz, mennyiseg, vevo_id, ar, teljes_ar]
     );
     
     return result.insertId;
