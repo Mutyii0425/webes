@@ -533,39 +533,7 @@ useEffect(() => {
     }
   }, [currentImageIndex, isAnimating, images.length]);
 
-  useEffect(() => {
-
-    document.body.style.overflowX = 'hidden';
-    document.documentElement.style.overflowX = 'hidden';
-    
  
-    const viewport = document.querySelector('meta[name=viewport]');
-    if (viewport) {
-      viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0';
-    }
-    
-
-    const preventDefaultTouch = (e) => {
-     
-      if (e.target.closest('#ratingsContainer')) {
-        return;
-      }
-      
-   
-      if (Math.abs(e.touches[0].clientX - e.touches[0].screenX) > 5) {
-        e.preventDefault();
-      }
-    };
-    
-
-    
-    return () => {
-
-      document.body.style.overflowX = '';
-      document.documentElement.style.overflowX = '';
-     
-    };
-  }, []);
   
 
     return (
@@ -1609,31 +1577,7 @@ useEffect(() => {
       }
     }
 
-      html, body {
-      overflow-x: hidden;
-      position: relative;
-      width: 100%;
-      touch-action: pan-y;
-    }
-    
-
-    #root, .MuiBox-root:not(#ratingsContainer), .MuiContainer-root {
-      max-width: 100%;
-      overflow-x: hidden;
-    }
-    
-    #ratingsContainer {
-      overflow-x: auto;
-      touch-action: pan-x;
-      -webkit-overflow-scrolling: touch;
-    }
-    
-
-    @media (pointer: coarse) {
-      *:not(#ratingsContainer, #ratingsContainer *) {
-        touch-action: pan-y;
-      }
-    }
+      
   `}
   </style>
 </Box>
@@ -1954,8 +1898,7 @@ useEffect(() => {
 </Box>
 
 <Box
-  id="ratingsContainer" 
-  ref={contentRef}
+ ref={scrollbarRef}
   sx={{
     display: 'flex',
     gap: {
