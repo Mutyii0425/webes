@@ -1117,7 +1117,11 @@ export default function Fadmin() {
                   }}>{order.mennyiseg}</TableCell>
                   <TableCell sx={{ 
                     fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
-                  }}>{order.ar.toLocaleString()} Ft</TableCell>
+                  }}>{order.teljes_ar.toLocaleString()} Ft</TableCell>
+                  <TableCell sx={{ 
+                      display: { xs: 'none', md: 'table-cell' },
+                      fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
+                    }}>{order.egysegar.toLocaleString()} Ft</TableCell>
                   <TableCell sx={{ 
                     fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
                   }}>
@@ -1285,7 +1289,7 @@ export default function Fadmin() {
             }}>
               {orders
                 .filter(order => order.statusz !== 'Törölve')
-                .reduce((total, order) => total + (Number(order.ar) || 0), 0)
+                .reduce((total, order) => total + (Number(order.teljes_ar) || 0), 0)
                 .toLocaleString()} Ft
             </Typography>
           </CardContent>
