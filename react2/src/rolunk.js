@@ -375,35 +375,89 @@ const AboutUs = () => {
                             </Typography>
                           </MenuItem>
 
-                          <MenuItem 
-                            onClick={handleClose}
-                            sx={{
-                              py: isExtraSmall ? 1 : 1.5,
-                              px: isExtraSmall ? 1.5 : 2,
-                              color: darkMode ? '#fff' : '#333',
-                              '&:hover': {
-                                backgroundColor: darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.04)',
-                              },
-                              gap: 2,
-                            }}
-                          >
-                            <Typography variant="body1" sx={{ fontSize: isExtraSmall ? '0.8rem' : 'inherit' }}>
-                              {(() => {
-                                const user = JSON.parse(localStorage.getItem('user') || '{}');
-                                if (user.kupon) {
-                                  if (user.kupon_hasznalva) {
-                                    return `Kupon: ${user.kupon} (Felhasználva)`;
-                                  } else if (user.kupon === 'Nincs nyeremény') {
-                                    return `Kupon: ${user.kupon} `;
-                                  } else {
-                                    return `Kupon: ${user.kupon} (Aktív)`;
-                                  }
-                                } else {
-                                  return 'Nincs kuponod';
-                                }
-                              })()}
-                            </Typography>
-                          </MenuItem>
+                           <MenuItem 
+                                                      onClick={handleClose}
+                                                      sx={{
+                                                        py: isExtraSmall ? 1 : 1.5,
+                                                        px: isExtraSmall ? 1.5 : 2,
+                                                        color: darkMode ? '#fff' : '#333',
+                                                        '&:hover': {
+                                                          backgroundColor: darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.04)',
+                                                        },
+                                                        gap: 2,
+                                                      }}
+                                                    >
+                                                      {(() => {
+                                                        const user = JSON.parse(localStorage.getItem('user') || '{}');
+                                                        let hasCoupons = false;
+                                                        
+                                                        
+                                                        return (
+                                                          <Box sx={{ width: '100%' }}>
+                                                            <Typography variant="body2" sx={{ 
+                                                              fontSize: isExtraSmall ? '0.8rem' : 'inherit',
+                                                              fontWeight: 'medium',
+                                                              mb: 0.5
+                                                            }}>
+                                                              Kuponjaim
+                                                            </Typography>
+                                                            {user.kupon && user.kupon !== 'Nincs nyeremény' && (
+                                                              <Box sx={{ mb: 0.5 }}>
+                                                                <Typography variant="body2" sx={{ 
+                                                                  fontSize: isExtraSmall ? '0.75rem' : '0.85rem',
+                                                                  display: 'flex',
+                                                                  justifyContent: 'space-between'
+                                                                }}>
+                                                                  <span>Regisztrációs kupon:</span>
+                                                                  <span>{user.kupon}</span>
+                                                                </Typography>
+                                                                <Typography variant="body2" sx={{ 
+                                                                  fontSize: isExtraSmall ? '0.7rem' : '0.8rem',
+                                                                  color: user.kupon_hasznalva ? 
+                                                                    (darkMode ? '#ff6b6b' : '#d32f2f') : 
+                                                                    (darkMode ? '#4caf50' : '#2e7d32'),
+                                                                  textAlign: 'right'
+                                                                }}>
+                                                                  {user.kupon_hasznalva ? '(Felhasználva)' : '(Aktív)'}
+                                                                </Typography>
+                                                              </Box>
+                                                            )}
+                                                            {user.email_kupon && user.email_kupon !== 'Nincs nyeremény' && (
+                                                              <Box>
+                                                                <Typography variant="body2" sx={{ 
+                                                                  fontSize: isExtraSmall ? '0.75rem' : '0.85rem',
+                                                                  display: 'flex',
+                                                                  justifyContent: 'space-between',
+                                                                  mt: 0.5
+                                                                }}>
+                                                                  <span>Email kupon:</span>
+                                                                  <span>{user.email_kupon}</span>
+                                                                </Typography>
+                                                                <Typography variant="body2" sx={{ 
+                                                                  fontSize: isExtraSmall ? '0.7rem' : '0.8rem',
+                                                                  color: user.email_kupon_hasznalva ? 
+                                                                    (darkMode ? '#ff6b6b' : '#d32f2f') : 
+                                                                    (darkMode ? '#4caf50' : '#2e7d32'),
+                                                                  textAlign: 'right'
+                                                                }}>
+                                                                  {user.email_kupon_hasznalva ? '(Felhasználva)' : '(Aktív)'}
+                                                                </Typography>
+                                                              </Box>
+                                                            )}
+                                                            
+                                                            {(!user.kupon || user.kupon === 'Nincs nyeremény') && 
+                                                            (!user.email_kupon || user.email_kupon === 'Nincs nyeremény') && (
+                                                              <Typography variant="body2" sx={{ 
+                                                                fontSize: isExtraSmall ? '0.75rem' : '0.85rem',
+                                                                color: darkMode ? '#aaa' : '#666'
+                                                              }}>
+                                                                Nincs aktív kuponod
+                                                              </Typography>
+                                                            )}
+                                                          </Box>
+                                                        );
+                                                      })()}
+                                                    </MenuItem>
 
                           <MenuItem 
                             onClick={handleLogout}
