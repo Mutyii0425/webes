@@ -1066,12 +1066,12 @@ export default function Fadmin() {
                 fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
               }}>Mennyiség</TableCell>
               <TableCell sx={{
+                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
+              }}>Teljes ár</TableCell>
+              <TableCell sx={{
                 display: { xs: 'none', md: 'table-cell' },
                 fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
               }}>Egységár</TableCell>
-              <TableCell sx={{
-                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
-              }}>Teljes ár</TableCell>
               <TableCell sx={{
                 fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
               }}>Státusz</TableCell>
