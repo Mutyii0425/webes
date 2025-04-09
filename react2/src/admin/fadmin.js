@@ -1046,32 +1046,36 @@ export default function Fadmin() {
         }}
       >
         <Table size={isMobile ? "small" : "medium"}>
-          <TableHead>
+        <TableHead>
             <TableRow>
-              <TableCell sx={{ 
+              <TableCell sx={{
                 fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
               }}>Rendelés ID</TableCell>
-              <TableCell sx={{ 
+              <TableCell sx={{
                 display: { xs: 'none', sm: 'table-cell' },
                 fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
               }}>Dátum</TableCell>
-              <TableCell sx={{ 
+              <TableCell sx={{
                 fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
               }}>Vevő</TableCell>
-              <TableCell sx={{ 
+              <TableCell sx={{
                 display: { xs: 'none', md: 'table-cell' },
                 fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
               }}>Termék</TableCell>
-              <TableCell sx={{ 
+              <TableCell sx={{
                 fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
               }}>Mennyiség</TableCell>
-              <TableCell sx={{ 
+              <TableCell sx={{
+                display: { xs: 'none', md: 'table-cell' },
                 fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
-              }}>Ár</TableCell>
-              <TableCell sx={{ 
+              }}>Egységár</TableCell>
+              <TableCell sx={{
+                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
+              }}>Teljes ár</TableCell>
+              <TableCell sx={{
                 fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
               }}>Státusz</TableCell>
-              <TableCell sx={{ 
+              <TableCell sx={{
                 fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
               }}>Műveletek</TableCell>
             </TableRow>
