@@ -39,26 +39,26 @@ const WheelOfFortune = ({ darkMode, showOnRegistration = false }) => {
   ];
   
   useEffect(() => {
-    // Ellenőrizzük, hogy a felhasználó jogosult-e a pörgetésre
+  
     const checkEligibility = async () => {
       const user = JSON.parse(localStorage.getItem('user'));
       
       if (!user || !user.f_azonosito) {
-        return; // Nincs bejelentkezett felhasználó
+        return;
       }
       
-      // Ha új regisztráció és showOnRegistration=true, akkor automatikusan megjelenítjük
+      
       if (showOnRegistration && user.isNewRegistration && !user.hasSpun) {
         setShowDialog(true);
       } else {
         try {
-          // Ellenőrizzük, hogy a felhasználónak van-e már kupona
+         
           const response = await fetch(`https://adaliclothing.onrender.com/api/coupons/user-coupons/${user.f_azonosito}`);
           
           if (response.ok) {
             const coupons = await response.json();
             
-            // Ha nincs kupon, vagy csak "Nincs nyeremény" kupona van, akkor jogosult a pörgetésre
+          
             const hasValidCoupon = coupons.some(coupon => 
               coupon.type === 'registration' && 
               coupon.description !== 'Nincs nyeremény'
@@ -77,14 +77,14 @@ const WheelOfFortune = ({ darkMode, showOnRegistration = false }) => {
     checkEligibility();
   }, [showOnRegistration]);
   
-  // Animáció a kedvezmények pörgetéséhez
+ 
   useEffect(() => {
     if (spinning) {
       const interval = setInterval(() => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % prizes.length);
       }, 100);
       
-      // Állítsuk meg a pörgetést 3 másodperc után
+     
       const timeout = setTimeout(() => {
         clearInterval(interval);
         setSpinning(false);
@@ -100,12 +100,12 @@ const WheelOfFortune = ({ darkMode, showOnRegistration = false }) => {
   
   const handleSpinClick = () => {
     if (!spinning) {
-      // Random prize number
+     
       const newPrizeNumber = Math.floor(Math.random() * prizes.length);
       setPrizeNumber(newPrizeNumber);
       setSpinning(true);
       
-      // Scroll to the spinning element
+      
       if (spinRef.current) {
         spinRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
@@ -115,7 +115,7 @@ const WheelOfFortune = ({ darkMode, showOnRegistration = false }) => {
   const handleSpinStop = async () => {
     setPrize(prizes[prizeNumber].option);
     
-    // Mentsük el a nyereményt az adatbázisba
+   
     try {
       const user = JSON.parse(localStorage.getItem('user'));
       
@@ -137,7 +137,7 @@ const WheelOfFortune = ({ darkMode, showOnRegistration = false }) => {
           if (result.success) {
             setCouponCode(result.couponCode);
             
-            // Frissítsük a localStorage-ben tárolt felhasználói adatokat
+         
             user.kupon = prizes[prizeNumber].option;
             user.kupon_kod = result.couponCode;
             user.hasSpun = true;
@@ -149,7 +149,7 @@ const WheelOfFortune = ({ darkMode, showOnRegistration = false }) => {
       console.error('Hiba a nyeremény mentésekor:', error);
     }
     
-    // Konfetti animáció, ha nyert valamit
+  
     if (prizes[prizeNumber].value > 0) {
       setIsExploding(true);
     }
@@ -161,7 +161,7 @@ const WheelOfFortune = ({ darkMode, showOnRegistration = false }) => {
     setShowDialog(false);
     setResultDialog(false);
     
-    // Frissítsük a user objektumot, hogy ne jelenjen meg újra
+  
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     if (user.isNewRegistration) {
       delete user.isNewRegistration;
@@ -465,7 +465,7 @@ const WheelOfFortune = ({ darkMode, showOnRegistration = false }) => {
           </DialogActions>
         </Dialog>
         
-        {/* CSS animációk */}
+   
         <style jsx="true">{`
           @keyframes pulse {
             0% {

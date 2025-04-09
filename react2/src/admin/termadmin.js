@@ -267,7 +267,7 @@ export default function Termadmin() {
           Termékek Kezelése
         </Typography>
 
-        {/* Új gomb a készletek tömeges feltöltéséhez */}
+      
         <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
           <Button
             variant="contained"
@@ -361,7 +361,7 @@ export default function Termadmin() {
                         }
                       }}
                     />
-                    {/* Új mező a készlet szerkesztéséhez */}
+          
                     <TextField
                       label="Készlet (db)"
                       type="number"
@@ -440,7 +440,7 @@ export default function Termadmin() {
                       {product.termekleiras}
                     </Typography>
                     
-                    {/* Új elem: Készlet információ megjelenítése */}
+            
                     <Box sx={{ 
                       display: 'flex', 
                       alignItems: 'center', 
@@ -517,7 +517,7 @@ export default function Termadmin() {
       </Container>
     </Box>
     
-    {/* Snackbar értesítések megjelenítése */}
+ 
     <Snackbar
       open={snackbar.open}
       autoHideDuration={6000}

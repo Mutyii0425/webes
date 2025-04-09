@@ -24,23 +24,21 @@ const ShareProduct = ({ product, darkMode, source }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
-  // Ellenőrizzük, hogy a terméknek van-e kategoriaId tulajdonsága
-  // Ha van, akkor az oterm.js oldalról jön (eredeti termékek)
-  // Ha nincs, akkor a vinted.js oldalról jön (feltöltött termékek)
+
   const isOriginalProduct = product.hasOwnProperty('kategoriaId');
   
-  // Termék URL létrehozása a megfelelő elérési úttal
+
   const productUrl = window.location.origin + 
     (source === 'oterm' ? `/termek/${product.id}` : `/product/${product.id}`);
   
   
-  // Termék neve és ára a megosztáshoz
+
   const productTitle = product.nev || 'Adali Clothing termék';
   const productPrice = product.ar ? `${product.ar} Ft` : '';
   const shareText = `Nézd meg ezt a terméket: ${productTitle} - ${productPrice}`;
 
   const handleShareClick = (event) => {
-    // Megakadályozzuk az esemény buborékolását és az alapértelmezett viselkedést
+ 
     if (event) {
       event.stopPropagation();
       event.preventDefault();
@@ -51,7 +49,7 @@ const ShareProduct = ({ product, darkMode, source }) => {
   };
 
   const handleClose = (event) => {
-    // Megakadályozzuk az esemény buborékolását
+   
     if (event) {
       event.stopPropagation();
       event.preventDefault();
@@ -129,14 +127,14 @@ const ShareProduct = ({ product, darkMode, source }) => {
       event.nativeEvent.stopImmediatePropagation();
     }
     
-    // Gmail link a mailto: helyett
+
     const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=&su=${encodeURIComponent('Nézd meg ezt a terméket az Adali Clothing oldalán!')}&body=${encodeURIComponent(shareText + '\n\n' + productUrl)}`;
     
     window.open(gmailUrl, '_blank');
     handleClose();
   };
 
-  // Megosztási opciók adatai
+
   const shareOptions = [
     { 
       name: 'Facebook', 
@@ -204,7 +202,7 @@ const ShareProduct = ({ product, darkMode, source }) => {
         </IconButton>
       </Tooltip>
 
-      {/* Modal a Popper helyett */}
+
       <Modal
         open={open}
         onClose={handleClose}
@@ -249,7 +247,7 @@ const ShareProduct = ({ product, darkMode, source }) => {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
+          
             <Box sx={{ 
               p: 2.5, 
               pb: 1.5,
@@ -293,7 +291,7 @@ const ShareProduct = ({ product, darkMode, source }) => {
               opacity: 0.1
             }} />
             
-            {/* Termék infó */}
+       
             <Box sx={{ px: 2.5, py: 1 }}>
               <Typography 
                 variant="body2" 
@@ -327,7 +325,7 @@ const ShareProduct = ({ product, darkMode, source }) => {
                 {productPrice}
               </Typography>
               
-              {/* Megjelenítjük a link típusát */}
+        
               <Typography 
                 variant="caption" 
                 sx={{ 
@@ -345,7 +343,7 @@ const ShareProduct = ({ product, darkMode, source }) => {
               opacity: 0.1
             }} />
             
-            {/* Megosztási opciók */}
+          
             <Box sx={{ p: 2.5, pt: 1.5 }}>
               <Typography 
                 variant="body2" 
@@ -415,7 +413,7 @@ const ShareProduct = ({ product, darkMode, source }) => {
             </Box>
           </Box>
           
-          {/* Footer */}
+      
           <Box sx={{ 
             p: 2, 
             backgroundColor: darkMode ? 'rgba(0,0,0,0.2)' : 'rgba(0,0,0,0.03)',

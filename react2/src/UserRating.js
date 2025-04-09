@@ -260,7 +260,7 @@ const UserRating = (props) => {
   borderBottom: '1px solid',
   borderColor: darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
   width: '100%',
-  flexWrap: 'nowrap'  // Prevent wrapping
+  flexWrap: 'nowrap' 
 }}>
   <Typography
     variant="h6"
@@ -273,9 +273,9 @@ const UserRating = (props) => {
         md: '1.25rem'
       },
       lineHeight: 1.2,
-      marginRight: 1,  // Add margin to separate from button
-      flexShrink: 1,   // Allow text to shrink if needed
-      minWidth: 0      // Allow text to shrink below its content size
+      marginRight: 1,  
+      flexShrink: 1,  
+      minWidth: 0      
     }}
   >
     Értékelések a feltöltőről
@@ -297,11 +297,11 @@ const UserRating = (props) => {
         backgroundColor: darkMode ? '#42a5f5' : '#1565c0',
         boxShadow: darkMode ? 'none' : '0 4px 12px rgba(25, 118, 210, 0.4)',
       },
-      minWidth: { xs: 'auto', sm: '120px' },  // Narrower on mobile
-      flexShrink: 0,   // Prevent button from shrinking
+      minWidth: { xs: 'auto', sm: '120px' },  
+      flexShrink: 0,   
       textTransform: 'none',
       whiteSpace: 'nowrap',
-      height: { xs: '26px', sm: 'auto' }  // Shorter height on mobile
+      height: { xs: '26px', sm: 'auto' }  
     }}
   >
     {isExtraSmall ? 'Értékelés' : 'Értékelés írása'}
@@ -497,7 +497,7 @@ const UserRating = (props) => {
                                             boxShadow: darkMode ? 'none' : '0 2px 8px rgba(0,0,0,0.05)',
                                             transition: 'transform 0.2s ease, box-shadow 0.2s ease',
                                             '&:hover': {
-                                              transform: { xs: 'none', sm: 'translateY(-2px)' }, // Disable hover effect on mobile
+                                              transform: { xs: 'none', sm: 'translateY(-2px)' },  
                                               boxShadow: darkMode ? '0 5px 15px rgba(0,0,0,0.2)' : '0 5px 15px rgba(0,0,0,0.08)'
                                             }
                                           }}
@@ -505,19 +505,19 @@ const UserRating = (props) => {
                                           <Box sx={{
                                             display: 'flex',
                                             justifyContent: 'space-between',
-                                            alignItems: { xs: 'flex-start', sm: 'center' }, // Align to top on mobile for better spacing
+                                            alignItems: { xs: 'flex-start', sm: 'center' }, 
                                             mb: { xs: 1, sm: 1.5 },
                                             pb: rating.velemeny ? { xs: 1, sm: 1.5 } : 0,
                                             borderBottom: rating.velemeny ? '1px solid' : 'none',
                                             borderColor: darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
-                                            flexWrap: { xs: 'wrap', sm: 'nowrap' }, // Allow wrapping on very small screens
-                                            gap: { xs: 1, sm: 0 } // Add gap when wrapped
+                                            flexWrap: { xs: 'wrap', sm: 'nowrap' }, 
+                                            gap: { xs: 1, sm: 0 } 
                                           }}>
                                             <Box sx={{ 
                                               display: 'flex', 
                                               alignItems: 'center', 
                                               gap: { xs: 1, sm: 1.5 },
-                                              width: { xs: '100%', sm: 'auto' } // Full width on mobile
+                                              width: { xs: '100%', sm: 'auto' }
                                             }}>
                                               <Avatar
                                                 src={rating.rater_profile_image}
@@ -562,9 +562,9 @@ const UserRating = (props) => {
                                             <Box sx={{
                                               display: 'flex',
                                               flexDirection: 'column',
-                                              alignItems: { xs: 'flex-start', sm: 'flex-end' }, // Left align on mobile
-                                              mt: { xs: 0.5, sm: 0 }, // Add top margin on mobile
-                                              ml: { xs: 2.5, sm: 0 } // Add left margin to align with avatar on mobile
+                                              alignItems: { xs: 'flex-start', sm: 'flex-end' },
+                                              mt: { xs: 0.5, sm: 0 }, 
+                                              ml: { xs: 2.5, sm: 0 } 
                                             }}>
                                               <Rating
                                                 value={rating.rating}
@@ -577,7 +577,7 @@ const UserRating = (props) => {
                                                   '& .MuiRating-iconEmpty': {
                                                     color: darkMode ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)'
                                                   },
-                                                  fontSize: { xs: '0.8rem', sm: '0.9rem' } // Smaller stars on mobile
+                                                  fontSize: { xs: '0.8rem', sm: '0.9rem' } 
                                                 }}
                                               />
                                               <Typography

@@ -1232,7 +1232,7 @@ const AboutUs = () => {
         </Container>
       </Box>
 
-      {/* Testimonials Section */}
+  
       <StyledSection darkMode={darkMode}>
         <Container maxWidth="lg">
           <Box sx={{ 
@@ -1436,7 +1436,7 @@ const AboutUs = () => {
         </Container>
       </StyledSection>
 
-      {/* Contact Section */}
+   
       <Box sx={{ 
         backgroundColor: darkMode ? '#2d2d2d' : '#fff',
         py: 8,

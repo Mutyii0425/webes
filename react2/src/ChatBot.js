@@ -1116,7 +1116,7 @@ const ChatBot = () => {
   </Box>
 ))}
 
-{/* Toast üzenet */}
+
 {toast.show && (
   <Box
     sx={{

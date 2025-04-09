@@ -1074,7 +1074,7 @@ const saveRatingToDatabase = async (rating, comment) => {
     )}
   </Box>
   
-  {/* Kedvezmény megjelenítése */}
+
   {appliedCoupon && (
     <Box sx={{ 
       display: 'flex', 
@@ -1095,7 +1095,7 @@ const saveRatingToDatabase = async (rating, comment) => {
   )}
 
 
-  {/* Add free shipping notification */}
+
   {totalPrice > 19999 && (
     <Box sx={{ 
       display: 'flex', 

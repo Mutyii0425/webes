@@ -62,12 +62,12 @@ export default function Vinted() {
         let data = await response.json();
         console.log("Products fetched:", data);
         
-        // Ellenőrizzük, hogy a termékek tartalmazzák-e a feltolto mezőt
+      
         data.forEach(product => {
           console.log(`Termék: ${product.nev}, Feltöltő: ${product.feltolto || 'Nincs megadva'}`);
         });
         
-        // Lekérjük a feltöltők profilképeit
+      
         const productsWithProfileImages = await Promise.all(data.map(async (product) => {
           if (product.feltolto) {
             try {

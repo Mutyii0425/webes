@@ -45,7 +45,7 @@ const SizeChart = ({ open, onClose, productType, darkMode }) => {
     setValue(newValue);
   };
 
-  // Mérettáblázat adatok
+
   const clothingSizes = [
     { size: 'S', chest: '88-96', waist: '73-81', hips: '88-96', height: '165-170' },
     { size: 'M', chest: '96-104', waist: '81-89', hips: '96-104', height: '170-175' },

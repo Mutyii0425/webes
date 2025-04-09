@@ -631,7 +631,6 @@ export default function Fadmin() {
                           Regisztrált: {new Date(user.reg_datum).toLocaleDateString()}
                         </Typography>
                         
-                        {/* Kupon információk megjelenítése */}
                         <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid #eee' }}>
                           <Typography variant="subtitle2" gutterBottom sx={{ 
                             fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.875rem' } 
@@ -1152,7 +1151,7 @@ export default function Fadmin() {
       </TableContainer>
     )}
     
-    {/* Részletes nézet vagy statisztikák hozzáadása */}
+
     <Box sx={{ mt: 4 }}>
       <Typography variant="h5" gutterBottom sx={{ 
         fontSize: { xs: '1.2rem', sm: '1.4rem', md: '1.5rem' } 
@@ -1264,7 +1263,7 @@ export default function Fadmin() {
         </Grid>
       </Grid>
       
-      {/* Bevétel statisztika */}
+
       <Box sx={{ mt: 3 }}>
         <Card sx={{ 
           backgroundColor: '#9c27b0',
@@ -1296,7 +1295,7 @@ export default function Fadmin() {
   </Box>
 )}
 
-{/* Státusz módosítás dialógus */}
+
 <Dialog 
   open={orderStatusDialogOpen} 
   onClose={() => setOrderStatusDialogOpen(false)}
@@ -1392,7 +1391,7 @@ export default function Fadmin() {
         </Button>
                     </Container>
               
-                    {/* Kupon küldési dialógus a kiválasztott felhasználóknak */}
+                 
                     <Dialog 
                       open={couponDialogOpen} 
                       onClose={handleCloseCouponDialog}
@@ -1452,8 +1451,7 @@ export default function Fadmin() {
                         </Button>
                       </DialogActions>
                     </Dialog>
-              
-                    {/* Kupon küldési dialógus minden felhasználónak */}
+            
                     <Dialog 
                       open={allCouponDialogOpen} 
                       onClose={() => setAllCouponDialogOpen(false)}
@@ -1571,8 +1569,7 @@ export default function Fadmin() {
                         </Button>
                       </DialogActions>
                     </Dialog>
-              
-                    {/* Snackbar értesítések */}
+             
                     <Snackbar
                       open={snackbarOpen}
                       autoHideDuration={6000}

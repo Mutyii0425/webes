@@ -163,7 +163,7 @@ export default function TermekReszletek() {
     }
     setSizeError('');
     
-    // Készlet ellenőrzés
+
     if (product.keszlet <= 0) {
       setCartAlert(false);
       setShowAlert(true);
@@ -186,7 +186,7 @@ export default function TermekReszletek() {
     const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
     const existingItem = cartItems.find(item => item.id === product.id && item.size === selectedSize);
   
-    // Ellenőrizzük, hogy a kosárba helyezés után nem lépjük-e túl a készletet
+
     const currentQuantityInCart = existingItem ? existingItem.mennyiseg : 0;
     if (currentQuantityInCart + 1 > product.keszlet) {
       setCartAlert(false);
@@ -576,7 +576,7 @@ export default function TermekReszletek() {
     width: { xs: '100%', sm: '90%', md: '1000px' },
     maxWidth: '100%',
     margin: '0 auto',
-    marginTop: { xs: '60px', sm: '80px' }, // Add top margin to clear the Dark Mode toggle
+    marginTop: { xs: '60px', sm: '80px' }, 
     background: darkMode
       ? 'linear-gradient(145deg, rgba(51, 51, 51, 0.9), rgba(68, 68, 68, 0.9))'
       : 'linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(245, 245, 245, 0.9))',
@@ -838,7 +838,7 @@ export default function TermekReszletek() {
     container
     spacing={{ xs: 1, sm: 2, md: 4 }}
     sx={{ 
-      px: { xs: 0.5, sm: 0, md: 0 } // Add padding to container on mobile
+      px: { xs: 0.5, sm: 0, md: 0 } 
     }}
   >
     <Grid item xs={6.5} sm={6} md={6}>
@@ -893,7 +893,7 @@ export default function TermekReszletek() {
    
     <Grid item xs={5} sm={5.5} md={5.5} sx={{ 
       ml: { xs: 0.5, sm: 0.5, md: 0.5 },
-      pr: { xs: 1, sm: 0, md: 0 } // Add right padding on mobile
+      pr: { xs: 1, sm: 0, md: 0 } 
     }}>
       <Box sx={{
         p: { xs: 1, sm: 2, md: 3 },
@@ -902,7 +902,7 @@ export default function TermekReszletek() {
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        width: { xs: '95%', sm: '100%', md: '100%' } // Make box narrower on mobile
+        width: { xs: '95%', sm: '100%', md: '100%' } 
       }}>
         <Typography
           variant="h6"
@@ -1368,7 +1368,7 @@ export default function TermekReszletek() {
           </Typography>
         </Box>
         
-        {/* Only the login button */}
+       
         <Box
           sx={{
             display: 'flex',

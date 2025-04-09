@@ -150,17 +150,17 @@ export default function SignInForm() {
     return emailRegex.test(email);
   };
   
-  // Email változás kezelése validációval
+
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setEmail(value);
   };
   
-  // Módosított handleLogin függvény
+
   const handleLogin = async (e) => {
     e.preventDefault();
     
-    // Email validáció
+
     if (!validateEmail(email)) {
       setErrorTitle('Érvénytelen email cím');
       setErrorMessage('Kérjük, adj meg egy érvényes email címet.');
@@ -168,7 +168,7 @@ export default function SignInForm() {
       return;
     }
     
-    // Jelszó validáció
+
     if (password.length < 6) {
       setErrorTitle('Érvénytelen jelszó');
       setErrorMessage('A jelszónak legalább 6 karakter hosszúnak kell lennie.');
@@ -176,7 +176,7 @@ export default function SignInForm() {
       return;
     }
     
-    setIsLoading(true); // Töltési állapot beállítása
+    setIsLoading(true); 
     
     try {
       const response = await fetch('https://adaliclothing.onrender.com/login', {
@@ -210,7 +210,7 @@ export default function SignInForm() {
       setErrorMessage('Szerverhiba történt! Kérjük, próbáld újra később.');
       setShowErrorDialog(true);
     } finally {
-      setIsLoading(false); // Töltési állapot visszaállítása
+      setIsLoading(false); 
     }
   };
   
@@ -779,7 +779,7 @@ export default function SignInForm() {
         },
       },
     }}
-    data-testid="login-error-alert" // Adjunk hozzá egy data-testid attribútumot
+    data-testid="login-error-alert" 
   >
     <Card
       sx={{
@@ -823,14 +823,14 @@ export default function SignInForm() {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}
-            data-testid="login-error-title" // Adjunk hozzá egy data-testid attribútumot
+            data-testid="login-error-title" 
           >
             Bejelentkezési hiba!
           </Typography>
           <Typography 
             variant="body1" 
             sx={{ color: darkMode ? '#aaa' : '#666' }}
-            data-testid="login-error-message" // Adjunk hozzá egy data-testid attribútumot
+            data-testid="login-error-message" 
           >
             {errorMessage}
           </Typography>

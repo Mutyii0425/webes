@@ -92,7 +92,7 @@ const PersonalStyleAdvisor = () => {
   const [userName, setUserName] = useState('');
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
 
-  // Sötét mód beállítása a localStorage alapján
+  
   useEffect(() => {
     const savedDarkMode = localStorage.getItem('darkMode');
     if (savedDarkMode !== null) {
@@ -100,7 +100,7 @@ const PersonalStyleAdvisor = () => {
     }
   }, []);
 
-  // Bejelentkezési állapot ellenőrzése
+ 
   useEffect(() => {
     const checkLoginStatus = () => {
       const userData = localStorage.getItem('user');
@@ -113,7 +113,7 @@ const PersonalStyleAdvisor = () => {
     checkLoginStatus();
   }, []);
 
-  // Oldalsó menü kezelése
+
   useEffect(() => {
     if (sideMenuActive) {
       document.body.style.overflow = 'hidden';
@@ -122,14 +122,14 @@ const PersonalStyleAdvisor = () => {
     }
   }, [sideMenuActive]);
 
-  // Első betöltéskor mutassunk egy rövid útmutatót
+
   useEffect(() => {
     setTimeout(() => {
       setInfoDialogOpen(true);
     }, 500);
   }, []);
 
-  // Fejléc függvények
+
   const toggleSideMenu = () => {
     setSideMenuActive((prev) => !prev);
   };
@@ -170,7 +170,7 @@ const PersonalStyleAdvisor = () => {
     navigate('/kosar');
   };
 
-  // Fájl kiválasztása
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -188,7 +188,7 @@ const PersonalStyleAdvisor = () => {
       setResult(null);
       setError('');
       
-      // Ha a kamera aktív, leállítjuk
+ 
      
       setSnackbar({
         open: true,
@@ -199,7 +199,7 @@ const PersonalStyleAdvisor = () => {
   };
 
  
-  // Kép elemzése
+
   const analyzeImage = async () => {
     console.log('Kép elemzése kezdődik a frontend oldalon...');
     
@@ -254,7 +254,6 @@ response = await fetch('https://adaliclothing.onrender.com/api/style/analyze-per
         severity: 'success'
       });
       
-      // Nyissuk meg az eredmény dialógust
       setResultDialogOpen(true);
     } catch (err) {
       console.error('Elemzési hiba:', err);
@@ -270,7 +269,7 @@ response = await fetch('https://adaliclothing.onrender.com/api/style/analyze-per
     }
   };
 
-  // Új kép választása
+ 
   const handleNewImage = () => {
     setSelectedFile(null);
     setPreviewUrl('');
@@ -282,7 +281,7 @@ response = await fetch('https://adaliclothing.onrender.com/api/style/analyze-per
     }
   };
 
-  // Snackbar bezárása
+
   const handleCloseSnackbar = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -290,7 +289,7 @@ response = await fetch('https://adaliclothing.onrender.com/api/style/analyze-per
     setSnackbar({ ...snackbar, open: false });
   };
 
-  // Fő háttérszín és szövegszín a sötét/világos mód alapján
+ 
   const mainBgColor = darkMode ? '#121212' : '#f5f5f5';
   const mainTextColor = darkMode ? '#ffffff' : '#333333';
   const primaryColor = darkMode ? '#90caf9' : '#1976d2';
@@ -335,7 +334,7 @@ response = await fetch('https://adaliclothing.onrender.com/api/style/analyze-per
     }
   };
   
-  // Aktuális színséma kiválasztása
+  
   const currentColors = darkMode ? colors.dark : colors.light;
   return (
     <div style={{
@@ -1102,7 +1101,7 @@ response = await fetch('https://adaliclothing.onrender.com/api/style/analyze-per
                          </MotionBox>
                        </Container>
                  
-                       {/* Információs dialógus */}
+                     
                        <Dialog
                          open={infoDialogOpen}
                          onClose={() => setInfoDialogOpen(false)}
@@ -1196,7 +1195,7 @@ response = await fetch('https://adaliclothing.onrender.com/api/style/analyze-per
                       </DialogContent>
                        </Dialog>
                  
-                       {/* Eredmény dialógus */}
+                  
                        <Dialog
                          open={resultDialogOpen}
                          onClose={() => setResultDialogOpen(false)}
@@ -1328,7 +1327,7 @@ response = await fetch('https://adaliclothing.onrender.com/api/style/analyze-per
         </DialogContent>
       </Dialog>
 
-      {/* Kijelentkezés megerősítő dialógus */}
+    
       {showLogoutAlert && (
   <Box
     sx={{
@@ -1493,7 +1492,7 @@ response = await fetch('https://adaliclothing.onrender.com/api/style/analyze-per
   </Box>
 )}
 
-      {/* Snackbar értesítések */}
+
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}
