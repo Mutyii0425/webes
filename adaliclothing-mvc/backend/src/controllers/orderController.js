@@ -110,33 +110,38 @@ class OrderController {
 
         async sendConfirmation(req, res) {
           const { email, name, orderId, orderItems, shippingDetails, totalPrice, discount, shippingCost, paymentMethod } = req.body;
-        
-
+          
+          
           const validTotalPrice = !isNaN(totalPrice) && totalPrice !== null ? Number(totalPrice) : 0;
           const validDiscount = !isNaN(discount) && discount !== null ? Number(discount) : 0;
-         
-
+          
+          
           let validShippingCost = 0;
+          let shippingCostDisplay = 'Ingyenes szállítás';
+          
           if (typeof shippingCost === 'number') {
             validShippingCost = !isNaN(shippingCost) ? shippingCost : 0;
+            shippingCostDisplay = validShippingCost > 0 ? `${validShippingCost.toLocaleString()} Ft` : 'Ingyenes szállítás';
           } else if (typeof shippingCost === 'string') {
-     
+            shippingCostDisplay = shippingCost; 
             const match = shippingCost.match(/\d+/);
             validShippingCost = match ? Number(match[0]) : 0;
           }
-        
+          
+         
+          const itemsTotal = orderItems.reduce((sum, item) => sum + (Number(item.ar) * Number(item.mennyiseg)), 0);
+          
+          
           const orderItemsList = orderItems.map(item =>
             `<tr>
               <td>${item.nev} - Méret: ${item.size}</td>
               <td>${item.mennyiseg} db</td>
-              <td>${Number(item.ar).toLocaleString()} </td>
+              <td>${Number(item.ar).toLocaleString()} Ft</td>
               <td>${(Number(item.ar) * Number(item.mennyiseg)).toLocaleString()} Ft</td>
             </tr>`
-          ).join('')
-        
-      
-          const subtotal = validTotalPrice - validShippingCost;
-        
+          ).join('');
+          
+         
           const msg = {
             from: '"Adali Clothing" <adaliclothing@gmail.com>',
             to: email,
@@ -144,9 +149,9 @@ class OrderController {
             html: `
               <h2>Kedves ${name}!</h2>
               <p>Köszönjük a rendelését! Az alábbiakban találja a rendelés részleteit.</p>
-        
+              
               <h3>Rendelési azonosító: #${orderId}</h3>
-        
+              
               <h4>Rendelt termékek:</h4>
               <table style="width:100%; border-collapse: collapse;">
                 <tr>
@@ -157,37 +162,37 @@ class OrderController {
                 </tr>
                 ${orderItemsList}
               </table>
-        
+              
               <h4>Szállítási adatok:</h4>
               <p>
                 Név: ${name}<br>
                 Telefonszám: ${shippingDetails.phoneNumber}<br>
                 Cím: ${shippingDetails.zipCode} ${shippingDetails.city}, ${shippingDetails.address}
               </p>
-        
+              
               <p>
-                Részösszeg: ${subtotal.toLocaleString()} Ft<br>
+                Részösszeg: ${itemsTotal.toLocaleString()} Ft<br>
                 Kedvezmény: ${validDiscount.toLocaleString()} Ft<br>
-                Szállítási költség: ${typeof shippingCost === 'string' ? shippingCost : validShippingCost.toLocaleString() + ' Ft'}<br>
-                <strong>Fizetendő összeg: ${(validTotalPrice - validDiscount).toLocaleString()} Ft</strong>
+                Szállítási költség: ${shippingCostDisplay}<br>
+                <strong>Fizetendő összeg: ${validTotalPrice.toLocaleString()} Ft</strong>
               </p>
-
+              
               <h4>Fizetési mód:</h4>
               <p>${paymentMethod || 'Utánvét'}</p>
             `
-          }
-        
+          };
+          
           try {
-            console.log('Sending confirmation email...')
+            console.log('Sending confirmation email...');
             const result = await emailService.send(msg);
-            console.log('Email sent successfully')
-            res.json({ success: true })
+            console.log('Email sent successfully');
+            res.json({ success: true });
           } catch (error) {
-            console.error('Email sending error:', error.response?.body)
+            console.error('Email sending error:', error.response?.body);
             res.status(500).json({
               error: 'Email sending failed',
               details: error.response?.body?.errors
-            })
+            });
           }
         }
 

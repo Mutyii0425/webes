@@ -375,13 +375,7 @@ const handleSubmitOrder = async () => {
         }
         throw new Error(errorData.error || 'Hiba történt a rendelés során');
       }
-      
-    
-      await fetch(`https://adaliclothing.onrender.com/termekek/${item.id}/stock`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ quantity: item.mennyiseg })
-      });
+     
     }
 
     const emailResponse = await fetch('https://adaliclothing.onrender.com/send-confirmation', {
