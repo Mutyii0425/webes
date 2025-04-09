@@ -1,4 +1,3 @@
-// react2\src\PaymentSimulation.js
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -39,13 +38,12 @@ const PaymentSimulation = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   
-  // Alert állapotok
+
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertSeverity, setAlertSeverity] = useState('error');
   const [alertTitle, setAlertTitle] = useState('');
-  
-  // Alert megjelenítése
+
   const showAlert = (message, severity = 'error', title = '') => {
     setAlertMessage(message);
     setAlertSeverity(severity);
@@ -54,7 +52,7 @@ const PaymentSimulation = () => {
   };
   
   useEffect(() => {
-    // Ellenőrizzük, hogy van-e rendelési adat
+  
     if (!orderId || !amount) {
       navigate('/');
       return;
@@ -62,17 +60,17 @@ const PaymentSimulation = () => {
   }, [orderId, amount, navigate]);
   
   const formatCardNumber = (value) => {
-    // Csak számokat engedünk meg
+
     const cleaned = value.replace(/\D/g, '');
-    // Formázás: 4 számjegyenként szóköz
+
     const formatted = cleaned.replace(/(\d{4})(?=\d)/g, '$1 ');
-    return formatted.substring(0, 19); // Max 16 számjegy + 3 szóköz
+    return formatted.substring(0, 19);
   };
   
   const formatExpiryDate = (value) => {
-    // Csak számokat engedünk meg
+
     const cleaned = value.replace(/\D/g, '');
-    // Formázás: MM/YY
+
     if (cleaned.length > 2) {
       return `${cleaned.substring(0, 2)}/${cleaned.substring(2, 4)}`;
     }
@@ -90,19 +88,19 @@ const PaymentSimulation = () => {
   const validateForm = () => {
     const newErrors = {};
     
-    // Kártyaszám ellenőrzése
+
     if (!cardNumber.trim()) {
       newErrors.cardNumber = 'A kártyaszám megadása kötelező';
     } else if (cardNumber.replace(/\s/g, '').length !== 16) {
       newErrors.cardNumber = 'A kártyaszámnak 16 számjegyből kell állnia';
     }
     
-    // Kártyatulajdonos ellenőrzése
+ 
     if (!cardName.trim()) {
       newErrors.cardName = 'A kártyatulajdonos nevének megadása kötelező';
     }
     
-    // Lejárati dátum ellenőrzése
+ 
     if (!expiryDate.trim()) {
       newErrors.expiryDate = 'A lejárati dátum megadása kötelező';
     } else if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
@@ -123,7 +121,7 @@ const PaymentSimulation = () => {
       }
     }
     
-    // CVV ellenőrzése
+   
     if (!cvv.trim()) {
       newErrors.cvv = 'A biztonsági kód megadása kötelező';
     } else if (!/^\d{3,4}$/.test(cvv)) {
@@ -142,21 +140,21 @@ const PaymentSimulation = () => {
       return;
     }
     
-    // Fizetés szimulálása
+
     setIsProcessing(true);
     
-    // Szimuláljuk a fizetési folyamatot 2 másodpercig
+
     setTimeout(() => {
       setIsProcessing(false);
       
-      // Véletlenszerűen szimuláljuk a sikeres/sikertelen fizetést (90% esély a sikerre)
+    
       const isSuccessful = Math.random() < 0.9;
       
       if (isSuccessful) {
         setPaymentSuccess(true);
         showAlert('A fizetés sikeres volt!', 'success', 'Sikeres fizetés');
         
-        // 2 másodperc múlva átirányítás a sikeres rendelés oldalra
+  
         setTimeout(() => {
           navigate('/', { 
             state: { 

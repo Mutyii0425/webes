@@ -111,16 +111,16 @@ class OrderController {
         async sendConfirmation(req, res) {
           const { email, name, orderId, orderItems, shippingDetails, totalPrice, discount, shippingCost, paymentMethod } = req.body;
         
-          // Ensure all values are valid numbers
+
           const validTotalPrice = !isNaN(totalPrice) && totalPrice !== null ? Number(totalPrice) : 0;
           const validDiscount = !isNaN(discount) && discount !== null ? Number(discount) : 0;
          
-          // Handle shipping cost which might be a string like "Ingyenes szállítás"
+
           let validShippingCost = 0;
           if (typeof shippingCost === 'number') {
             validShippingCost = !isNaN(shippingCost) ? shippingCost : 0;
           } else if (typeof shippingCost === 'string') {
-            // If it's a string like "1590 Ft", extract the number
+     
             const match = shippingCost.match(/\d+/);
             validShippingCost = match ? Number(match[0]) : 0;
           }
@@ -134,7 +134,7 @@ class OrderController {
             </tr>`
           ).join('')
         
-          // Calculate subtotal correctly
+      
           const subtotal = validTotalPrice - validShippingCost;
         
           const msg = {
@@ -201,7 +201,7 @@ class OrderController {
           }
         }
         
-        // Egy vevő adatainak lekérdezése
+ 
         async getCustomerById(req, res) {
           try {
             const customerId = req.params.id;
@@ -223,7 +223,7 @@ class OrderController {
           }
         }
         
-        // Rendelés státuszának frissítése
+
         async updateOrderStatus(req, res) {
           try {
             const orderId = req.params.id;
@@ -250,7 +250,7 @@ class OrderController {
           }
         }
         
-        // Rendelési statisztikák lekérdezése
+
         async getOrderStatistics(req, res) {
           try {
             const stats = await this.orderModel.getOrderStats();

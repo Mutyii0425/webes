@@ -47,7 +47,7 @@ const Menu = ({ sideMenuActive, toggleSideMenu, darkMode, setChatOpen }) => {
   useEffect(() => {
     checkUserData();
     
-    // Listen for profile image updates
+  
     const handleProfileImageUpdate = () => {
       console.log('Profile image update detected in menu2.js');
       checkUserData();
@@ -55,7 +55,7 @@ const Menu = ({ sideMenuActive, toggleSideMenu, darkMode, setChatOpen }) => {
     
     window.addEventListener('profileImageUpdated', handleProfileImageUpdate);
     
-    // Cleanup listener on component unmount
+
     return () => {
       window.removeEventListener('profileImageUpdated', handleProfileImageUpdate);
     };

@@ -108,7 +108,7 @@ export default function Termadmin() {
       });
 
       if (response.ok) {
-        // Készlet frissítése külön kéréssel
+    
         const stockResponse = await fetch(`https://adaliclothing.onrender.com/termekek/${editingProduct.id}/set-stock`, {
           method: 'PUT',
           headers: {
@@ -150,7 +150,7 @@ export default function Termadmin() {
     }
   };
 
-  // Új funkció: Összes termék készletének feltöltése
+
   const handleBulkStockUpdate = async () => {
     try {
       setLoading(true);
@@ -167,7 +167,7 @@ export default function Termadmin() {
 
       if (response.ok) {
         const result = await response.json();
-        // Frissítsük a termékek listáját az új készletekkel
+
         const updatedProducts = await fetch('https://adaliclothing.onrender.com/termekek').then(res => res.json());
         setProducts(updatedProducts);
         

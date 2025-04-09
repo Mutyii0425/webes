@@ -757,7 +757,7 @@ export default function ProductDetail() {
       {product.feltolto}
     </Typography>
     
-    {/* Feltöltő értékelése */}
+
     <UploaderRatingBadge 
       username={product.feltolto} 
       darkMode={darkMode}

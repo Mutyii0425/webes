@@ -17,6 +17,7 @@ export default (authController) => {
   
   
   router.post('/update-coupon', authController.updateCoupon.bind(authController));
+  
 
   router.post('/mark-coupon-used', authController.markCouponAsUsed.bind(authController));
 

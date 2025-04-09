@@ -55,7 +55,7 @@ class UserController {
         });
       }
       
-      // Ellenőrizzük, hogy a felhasználó létezik-e
+   
       const user = await this.userModel.findByUsername(username);
       if (!user) {
         return res.status(404).json({ 
@@ -64,7 +64,7 @@ class UserController {
         });
       }
       
-      // Ha nincs profilkép, adjunk vissza egy hibaüzenetet
+   
       if (!user.profile_image) {
         return res.status(404).json({ 
           success: false, 
@@ -72,7 +72,7 @@ class UserController {
         });
       }
       
-      // Küldjük vissza a profilképet
+     
       res.json({ 
         success: true, 
         profileImage: user.profile_image 
@@ -97,7 +97,7 @@ class UserController {
         });
       }
       
-      // Ellenőrizzük, hogy a felhasználó létezik-e
+   
       const user = await this.userModel.findByUsername(username);
       if (!user) {
         return res.status(404).json({ 
@@ -106,7 +106,7 @@ class UserController {
         });
       }
       
-      // Mentsük el a képet az adatbázisba
+    
       await this.userModel.saveProfileImage(username, imageData);
       
       res.json({ 

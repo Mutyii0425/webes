@@ -571,7 +571,7 @@ import InactivityAlert from './InactivityAlert';
         transform: 'translateY(-8px)'
       }
     }}>
-      {/* Link a termék részleteihez */}
+
       <Link to={`/termek/${product.id}`} style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
         <Card sx={{
          height: '100%',
@@ -663,7 +663,7 @@ import InactivityAlert from './InactivityAlert';
             </Box>
           </Box>
           
-          {/* Tartalom */}
+
           <CardContent sx={{ 
             flexGrow: 1,
             display: 'flex',

@@ -9,7 +9,7 @@ import cors from 'cors';
 import express from 'express';
 const app = express();
 
-// Create a connection pool instead of a single connection
+
 let pool;
 const initDb = async () => {
   try {
@@ -32,7 +32,6 @@ const initDb = async () => {
   }
 };
 
-// Update the getUserProfileImageByUsername function to use the pool
 async function getUserProfileImageByUsername(pool, username) {
   try {
     const [rows] = await pool.execute(
@@ -46,7 +45,7 @@ async function getUserProfileImageByUsername(pool, username) {
   }
 }
 
-// Update the saveUserProfileImageByUsername function to use the pool
+
 async function saveUserProfileImageByUsername(pool, username, imageData) {
   try {
     await pool.execute(
@@ -63,11 +62,11 @@ async function saveUserProfileImageByUsername(pool, username, imageData) {
 const startServer = async () => {
   const app = await initializeApp();
 
-  // Initialize the database pool
+
   pool = await initDb();
   const db = pool;
 
-  // CORS beállítások a környezeti változó használatával
+
   const corsOrigin = process.env.CORS_ORIGIN || 'https://adaliclothing.vercel.app';
   console.log('CORS origin beállítva:', corsOrigin);
   
@@ -81,7 +80,7 @@ const startServer = async () => {
   app.use(express.json({ limit: '50mb' }));
   app.use(express.urlencoded({ extended: true, limit: '50mb' }));
   
-  // Update the profile image endpoints to use the pool and add error handling
+
   app.post('/profile-image', async (req, res) => {
     try {
       const { username, imageData } = req.body;
@@ -90,7 +89,7 @@ const startServer = async () => {
         return res.status(400).json({ success: false, message: 'Hiányzó adatok' });
       }
       
-      // Check if the pool is available
+
       if (!pool) {
         console.error('Adatbázis kapcsolat nem elérhető');
         return res.status(500).json({ success: false, message: 'Adatbázis kapcsolat nem elérhető' });
@@ -105,7 +104,7 @@ const startServer = async () => {
     } catch (error) {
       console.error('Hiba a profilkép mentésekor:', error);
       
-      // Send a more detailed error response
+
       res.status(500).json({ 
         success: false, 
         message: 'Szerver hiba a profilkép mentésekor',
@@ -118,7 +117,7 @@ const startServer = async () => {
     try {
       const { username } = req.params;
       
-      // Check if the pool is available
+
       if (!pool) {
         console.error('Adatbázis kapcsolat nem elérhető');
         return res.status(500).json({ success: false, message: 'Adatbázis kapcsolat nem elérhető' });
@@ -151,7 +150,7 @@ const startServer = async () => {
     }
   }
   
-  // Add a health check endpoint
+
   app.get('/api/health', async (req, res) => {
     const dbConnected = await checkDatabaseConnection();
     
@@ -174,7 +173,7 @@ const startServer = async () => {
   const upload = multer({
     storage: storage,
     limits: {
-      fileSize: 10 * 1024 * 1024 // 10 MB (vagy bármilyen méret, amire szükséged van)
+      fileSize: 10 * 1024 * 1024 
     }
   });
   
@@ -197,7 +196,7 @@ const startServer = async () => {
   console.log('Vision API kulcs elérési útja:', keyFilePath);
   console.log('Fájl létezik:', fs.existsSync(keyFilePath));
   
-  // Ha létezik, kiírjuk a tartalmát (csak fejlesztési célokra)
+
   if (fs.existsSync(keyFilePath)) {
     try {
       const keyContent = fs.readFileSync(keyFilePath, 'utf8');
@@ -210,7 +209,7 @@ const startServer = async () => {
 
 console.log('GOOGLE_APPLICATION_CREDENTIALS környezeti változó:', process.env.GOOGLE_APPLICATION_CREDENTIALS);
 
-// Próbáljuk meg használni a környezeti változót
+
 let visionClient;
 try {
   if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
@@ -399,14 +398,14 @@ app.post('/api/analyze-image', async (req, res) => {
     } catch (apiError) {
       console.error('Hiba a Vision API használata során:', apiError);
       
-      // Fallback válasz küldése hiba nélkül
+    
       console.log('Fallback válasz küldése');
       res.json(getFallbackResponse());
     }
   } catch (error) {
     console.error('Hiba a kép elemzése során:', error);
     
-    // Fallback válasz küldése hiba nélkül
+ 
     console.log('Fallback válasz küldése');
     res.json(getFallbackResponse());
   }
@@ -606,7 +605,7 @@ app.post('/api/style/analyze-base64', async (req, res) => {
     
     if (!req.body.image || !req.body.image.startsWith('data:image/')) {
       console.log('HIBA: Érvénytelen képformátum');
-      // Változtatás: 400 helyett 200-as státuszkód és csak a fallback válasz
+
       return res.status(200).json(getStyleFallbackResponse());
     }
     
@@ -619,10 +618,10 @@ app.post('/api/style/analyze-base64', async (req, res) => {
       console.log('API használati számláló növelve: style_api');
     } catch (dbError) {
       console.error('Hiba az API használat növelésekor:', dbError);
-      // Folytatjuk a végrehajtást, ez nem kritikus hiba
+  
     }
     
-    // Egyszerűen visszaadjuk a fallback választ, nem próbáljuk meg a Vision API-t használni
+
     console.log('Fallback stílus elemzés küldése a Vision API hívás kihagyásával');
     const styleAnalysis = getStyleFallbackResponse();
     
@@ -634,7 +633,7 @@ app.post('/api/style/analyze-base64', async (req, res) => {
   } catch (error) {
     console.error('HIBA a stílus elemzése során:', error);
     console.log('Fallback válasz küldése...');
-    // Változtatás: 500 helyett 200-as státuszkód és csak a fallback válasz
+
     return res.status(200).json(getStyleFallbackResponse());
   }
 });

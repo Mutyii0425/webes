@@ -9,12 +9,12 @@ class CouponModel {
   }
 
   async updateUserCoupon(userId, couponType, couponCode, expiryDays = 30) {
-    // Számítsuk ki a lejárati dátumot
+
     const expiryDate = new Date();
     expiryDate.setDate(expiryDate.getDate() + expiryDays);
     const formattedExpiryDate = expiryDate.toISOString().slice(0, 19).replace('T', ' ');
     
-    // Frissítsük a felhasználó kupon adatait
+
     const [result] = await this.db.execute(
       'UPDATE user SET kupon = ?, kupon_kod = ?, kupon_lejar = ?, kupon_hasznalva = 0 WHERE f_azonosito = ?',
       [`${couponType}% kedvezmény`, couponCode, formattedExpiryDate, userId]
@@ -24,7 +24,7 @@ class CouponModel {
   }
 
   async updateUserEmailCoupon(userId, couponCode, expiryDays = 30) {
-    // Számítsuk ki a lejárati dátumot
+
     const expiryDate = new Date();
     expiryDate.setDate(expiryDate.getDate() + expiryDays);
     const formattedExpiryDate = expiryDate.toISOString().slice(0, 19).replace('T', ' ');
@@ -74,14 +74,14 @@ class CouponModel {
     const user = rows[0];
     const now = new Date();
     
-    // Ellenőrizzük a kuponok lejárati idejét
+ 
     let coupons = [];
     
-    // Regisztrációs kupon
+ 
     if (user.kupon) {
       const kuponExpired = user.kupon_lejar && new Date(user.kupon_lejar) < now;
       
-      // Kinyerjük a százalékos értéket
+  
       let discountPercentage = 0;
       if (user.kupon.includes('%')) {
         const match = user.kupon.match(/(\d+)%/);
@@ -103,12 +103,12 @@ class CouponModel {
       });
     }
     
-    // Email kupon
+
     if (user.email_kupon) {
       const emailKuponExpired = user.email_kupon_lejar && new Date(user.email_kupon_lejar) < now;
       
-      // Kinyerjük a százalékos értéket
-      let discountPercentage = 15; // Alapértelmezett érték
+
+      let discountPercentage = 15; 
       if (user.email_kupon.includes('%')) {
         const match = user.email_kupon.match(/(\d+)%/);
         if (match && match[1]) {
@@ -132,7 +132,7 @@ class CouponModel {
 
   async sendCouponsToSelectedUsers(userIds, expiryDays = 30) {
     try {
-      // Felhasználók lekérése
+  
       let users;
       if (userIds.length === 1) {
         [users] = await this.db.execute(
@@ -154,20 +154,19 @@ class CouponModel {
       let successCount = 0;
       let errorCount = 0;
       const results = [];
-      
-      // Kupon küldése minden kiválasztott felhasználónak
+
       for (const user of users) {
         try {
-          // Egyedi kuponkód generálása
+
           const crypto = await import('crypto');
           const couponCode = `ADALI15-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
           
-          // Lejárati dátum számítása
+    
           const expiryDate = new Date();
           expiryDate.setDate(expiryDate.getDate() + expiryDays);
           const formattedExpiryDate = expiryDate.toISOString().slice(0, 19).replace('T', ' ');
           
-          // Felhasználó adatainak frissítése az adatbázisban
+        
           const updateResult = await this.db.execute(
             'UPDATE user SET email_kupon = ?, email_kupon_kod = ?, email_kupon_lejar = ?, email_kupon_hasznalva = 0 WHERE f_azonosito = ?',
             ['15% kedvezmény', couponCode, formattedExpiryDate, user.f_azonosito]
@@ -206,7 +205,7 @@ class CouponModel {
   
   async validateCoupon(code, userId) {
     try {
-      // Lekérjük a felhasználó adatait
+
       const [users] = await this.db.execute(
         `SELECT 
           kupon, kupon_kod, kupon_hasznalva, kupon_lejar,
@@ -223,14 +222,14 @@ class CouponModel {
       const user = users[0];
       const now = new Date();
       
-      // Ellenőrizzük a regisztrációs kupont
+   
       if (user.kupon_kod && user.kupon_kod.toUpperCase() === code.toUpperCase() && !user.kupon_hasznalva) {
-        // Ellenőrizzük a lejárati időt
+      
         if (user.kupon_lejar && new Date(user.kupon_lejar) < now) {
           return { valid: false, reason: 'expired' };
         }
         
-        // Kinyerjük a kedvezmény mértékét
+     
         let discountPercentage = 0;
         if (user.kupon.includes('%')) {
           const match = user.kupon.match(/(\d+)%/);
@@ -248,15 +247,15 @@ class CouponModel {
         };
       }
       
-      // Ellenőrizzük az email kupont
+
       if (user.email_kupon_kod && user.email_kupon_kod.toUpperCase() === code.toUpperCase() && !user.email_kupon_hasznalva) {
-        // Ellenőrizzük a lejárati időt
+
         if (user.email_kupon_lejar && new Date(user.email_kupon_lejar) < now) {
           return { valid: false, reason: 'expired' };
         }
         
-        // Kinyerjük a kedvezmény mértékét
-        let discountPercentage = 15; // Alapértelmezett érték
+
+        let discountPercentage = 15; 
         if (user.email_kupon.includes('%')) {
           const match = user.email_kupon.match(/(\d+)%/);
           if (match && match[1]) {
@@ -280,7 +279,7 @@ class CouponModel {
 
   async getCouponStats() {
     try {
-      // Összes kupon száma
+  
       const [totalCouponsResult] = await this.db.execute(`
         SELECT COUNT(*) as total FROM (
           SELECT f_azonosito FROM user WHERE kupon IS NOT NULL
@@ -289,7 +288,7 @@ class CouponModel {
         ) as all_coupons
       `);
       
-      // Felhasznált kuponok száma
+ 
       const [usedCouponsResult] = await this.db.execute(`
         SELECT COUNT(*) as total FROM (
           SELECT f_azonosito FROM user WHERE kupon IS NOT NULL AND kupon_hasznalva = 1
@@ -298,7 +297,7 @@ class CouponModel {
         ) as used_coupons
       `);
       
-      // Lejárt kuponok száma
+
       const [expiredCouponsResult] = await this.db.execute(`
         SELECT COUNT(*) as total FROM (
           SELECT f_azonosito FROM user 
@@ -311,7 +310,7 @@ class CouponModel {
         ) as expired_coupons
       `);
       
-      // Aktív kuponok száma
+
       const [activeCouponsResult] = await this.db.execute(`
         SELECT COUNT(*) as total FROM (
           SELECT f_azonosito FROM user 
@@ -324,7 +323,7 @@ class CouponModel {
         ) as active_coupons
       `);
       
-      // Összes kedvezmény értéke
+   
       const [ordersWithDiscountResult] = await this.db.execute(`
         SELECT SUM(ar * mennyiseg * 0.15) as total_discount
           FROM rendeles r
@@ -346,7 +345,7 @@ class CouponModel {
     }
   }
   
-  // Kupon történet lekérése
+ 
   async getCouponHistory() {
     try {
       const [registrationCoupons] = await this.db.execute(`
@@ -391,7 +390,7 @@ class CouponModel {
         WHERE u.email_kupon IS NOT NULL
       `);
       
-      // Egyesítjük a két listát
+
       const allCoupons = [
         ...registrationCoupons.map(coupon => ({
           ...coupon,
@@ -403,7 +402,7 @@ class CouponModel {
         }))
       ];
       
-      // Rendezzük a listát a létrehozás dátuma szerint csökkenő sorrendben
+ 
       allCoupons.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       
       return allCoupons;
@@ -413,10 +412,10 @@ class CouponModel {
     }
   }
   
-  // Szerencsekerék nyeremény mentése
+
   async saveWheelPrize(userId, prize, couponCode) {
     try {
-      // Ellenőrizzük, hogy a felhasználónak van-e már aktív kuponja
+
       const [existingCoupons] = await this.db.execute(
         'SELECT kupon, kupon_hasznalva, kupon_lejar FROM user WHERE f_azonosito = ?',
         [userId]
@@ -428,20 +427,20 @@ class CouponModel {
       
       const user = existingCoupons[0];
       
-      // Ha már van aktív kuponja, ne adjunk újat
+      
       if (user.kupon && user.kupon_hasznalva === 0 && 
           (!user.kupon_lejar || new Date(user.kupon_lejar) > new Date())) {
         return false;
       }
       
-      // Lejárati dátum számítása (30 nap)
+      
       const expiryDate = new Date();
       expiryDate.setDate(expiryDate.getDate() + 30);
       
-      // Formázott dátum az adatbázis számára (YYYY-MM-DD HH:MM:SS)
+      
       const formattedExpiryDate = expiryDate.toISOString().slice(0, 19).replace('T', ' ');
       
-      // Mentsük el a kupont
+      
       const [result] = await this.db.execute(
         'UPDATE user SET kupon = ?, kupon_kod = ?, kupon_hasznalva = 0, kupon_lejar = ? WHERE f_azonosito = ?',
         [prize, couponCode, formattedExpiryDate, userId]
@@ -454,10 +453,10 @@ class CouponModel {
     }
   }
   
-  // Kupon érvényességének ellenőrzése
+
   async validateCoupon(code, userId) {
     try {
-      // Ha van userId, akkor ellenőrizzük a felhasználó kuponjait
+
       if (userId) {
         const [user] = await this.db.execute(
           `SELECT 
@@ -474,19 +473,19 @@ class CouponModel {
         
         const userData = user[0];
         
-        // Ellenőrizzük a regisztrációs kupont
+
         if (userData.kupon_kod === code) {
           if (userData.kupon_hasznalva === 1) {
             return { valid: false, message: 'Ez a kupon már fel lett használva' };
           }
           
-          // Ellenőrizzük a lejárati időt
+
           if (userData.kupon_lejar && new Date(userData.kupon_lejar) < new Date()) {
             return { valid: false, message: 'Ez a kupon már lejárt' };
           }
           
-          // Kinyerjük a kedvezmény mértékét
-          let discount = 15; // Alapértelmezett érték
+
+          let discount = 15; 
           if (userData.kupon && userData.kupon.includes('%')) {
             const discountMatch = userData.kupon.match(/(\d+)%/);
             if (discountMatch && discountMatch[1]) {
@@ -502,8 +501,7 @@ class CouponModel {
         };
       }
       
-      // Ellenőrizzük az email kupont
-      // Kinyerjük a kuponkódot az email_kupon mezőből
+
       let emailCouponCode = '';
       if (userData.email_kupon && userData.email_kupon.includes(':')) {
         emailCouponCode = userData.email_kupon.split(':')[1].trim();
@@ -514,13 +512,13 @@ class CouponModel {
           return { valid: false, message: 'Ez a kupon már fel lett használva' };
         }
         
-        // Ellenőrizzük a lejárati időt
+
         if (userData.email_kupon_lejar && new Date(userData.email_kupon_lejar) < new Date()) {
           return { valid: false, message: 'Ez a kupon már lejárt' };
         }
         
-        // Kinyerjük a kedvezmény mértékét
-        let discount = 15; // Alapértelmezett érték
+
+        let discount = 15; 
         if (userData.email_kupon && userData.email_kupon.includes('%')) {
           const discountMatch = userData.email_kupon.match(/(\d+)%/);
           if (discountMatch && discountMatch[1]) {
@@ -538,7 +536,7 @@ class CouponModel {
       return { valid: false, message: 'Érvénytelen kuponkód' };
     }
     
-    // Ha nincs userId, akkor ellenőrizzük az összes felhasználó kuponját
+
     const [users] = await this.db.execute(
       `SELECT 
         f_azonosito, kupon, kupon_kod, kupon_hasznalva, kupon_lejar,
@@ -552,22 +550,22 @@ class CouponModel {
       return { valid: false, message: 'Érvénytelen kuponkód' };
     }
     
-    // Ellenőrizzük az első találatot
+
     const user = users[0];
     
-    // Regisztrációs kupon
+
     if (user.kupon_kod === code) {
       if (user.kupon_hasznalva === 1) {
         return { valid: false, message: 'Ez a kupon már fel lett használva' };
       }
       
-      // Ellenőrizzük a lejárati időt
+
       if (user.kupon_lejar && new Date(user.kupon_lejar) < new Date()) {
         return { valid: false, message: 'Ez a kupon már lejárt' };
       }
       
-      // Kinyerjük a kedvezmény mértékét
-      let discount = 15; // Alapértelmezett érték
+
+      let discount = 15; 
       if (user.kupon && user.kupon.includes('%')) {
         const discountMatch = user.kupon.match(/(\d+)%/);
         if (discountMatch && discountMatch[1]) {
@@ -583,8 +581,7 @@ class CouponModel {
       };
     }
     
-    // Email kupon
-    // Kinyerjük a kuponkódot az email_kupon mezőből
+
     let emailCouponCode = '';
     if (user.email_kupon && user.email_kupon.includes(':')) {
       emailCouponCode = user.email_kupon.split(':')[1].trim();
@@ -595,13 +592,13 @@ class CouponModel {
         return { valid: false, message: 'Ez a kupon már fel lett használva' };
       }
       
-      // Ellenőrizzük a lejárati időt
+
       if (user.email_kupon_lejar && new Date(user.email_kupon_lejar) < new Date()) {
         return { valid: false, message: 'Ez a kupon már lejárt' };
       }
       
-      // Kinyerjük a kedvezmény mértékét
-      let discount = 15; // Alapértelmezett érték
+ 
+      let discount = 15; 
       if (user.email_kupon && user.email_kupon.includes('%')) {
         const discountMatch = user.email_kupon.match(/(\d+)%/);
         if (discountMatch && discountMatch[1]) {
@@ -628,10 +625,9 @@ async validateCoupon(code, userId) {
   try {
     console.log(`Kupon validálás kezdete: Kód=${code}, UserId=${userId}`);
     
-    // Normalizáljuk a kuponkódot
     const normalizedCode = String(code).trim().toUpperCase();
     
-    // Keressük a kupont közvetlenül a kód alapján
+
     const [regCoupons] = await this.db.execute(
       'SELECT f_azonosito, felhasznalonev, kupon, kupon_kod, kupon_lejar, kupon_hasznalva FROM user WHERE kupon_kod = ?',
       [normalizedCode]
@@ -639,30 +635,29 @@ async validateCoupon(code, userId) {
     
     console.log('Regisztrációs kupon keresés eredménye:', regCoupons);
     
-    // Ellenőrizzük a regisztrációs kupont
+
     if (regCoupons.length > 0) {
       const coupon = regCoupons[0];
       
-      // Ellenőrizzük, hogy a kupon a felhasználóhoz tartozik-e
+   
       if (coupon.f_azonosito !== userId) {
         console.log('A kupon más felhasználóhoz tartozik');
         return { valid: false, reason: 'not_your_coupon', message: 'Ez a kupon nem a te fiókodhoz tartozik' };
       }
       
-      // Ellenőrizzük, hogy a kupon használt-e
+
       if (coupon.kupon_hasznalva) {
         console.log('A kupon már fel lett használva');
         return { valid: false, reason: 'already_used', message: 'Ez a kupon már fel lett használva' };
       }
       
-      // Ellenőrizzük a lejárati időt
+
       if (coupon.kupon_lejar && new Date(coupon.kupon_lejar) < new Date()) {
         console.log('A kupon lejárt');
         return { valid: false, reason: 'expired', message: 'Ez a kupon már lejárt' };
       }
-      
-      // Kinyerjük a kedvezmény mértékét
-      let discountPercentage = 15; // Alapértelmezett érték
+
+      let discountPercentage = 15;
       if (coupon.kupon && coupon.kupon.includes('%')) {
         const match = coupon.kupon.match(/(\d+)%/);
         if (match && match[1]) {
@@ -681,7 +676,7 @@ async validateCoupon(code, userId) {
       };
     }
     
-    // Keressük az email kupont
+
     const [emailCoupons] = await this.db.execute(
       'SELECT f_azonosito, felhasznalonev, email_kupon, email_kupon_kod, email_kupon_lejar, email_kupon_hasznalva FROM user WHERE email_kupon_kod = ?',
       [normalizedCode]
@@ -689,30 +684,30 @@ async validateCoupon(code, userId) {
     
     console.log('Email kupon keresés eredménye:', emailCoupons);
     
-    // Ellenőrizzük az email kupont
+
     if (emailCoupons.length > 0) {
       const coupon = emailCoupons[0];
       
-      // Ellenőrizzük, hogy a kupon a felhasználóhoz tartozik-e
+
       if (coupon.f_azonosito !== userId) {
         console.log('A kupon más felhasználóhoz tartozik');
         return { valid: false, reason: 'not_your_coupon', message: 'Ez a kupon nem a te fiókodhoz tartozik' };
       }
       
-      // Ellenőrizzük, hogy a kupon használt-e
+
       if (coupon.email_kupon_hasznalva) {
         console.log('A kupon már fel lett használva');
         return { valid: false, reason: 'already_used', message: 'Ez a kupon már fel lett használva' };
       }
       
-      // Ellenőrizzük a lejárati időt
+
       if (coupon.email_kupon_lejar && new Date(coupon.email_kupon_lejar) < new Date()) {
         console.log('A kupon lejárt');
         return { valid: false, reason: 'expired', message: 'Ez a kupon már lejárt' };
       }
       
-      // Kinyerjük a kedvezmény mértékét
-      let discountPercentage = 10; // Alapértelmezett érték
+   
+      let discountPercentage = 10;
       if (coupon.email_kupon && coupon.email_kupon.includes('%')) {
         const match = coupon.email_kupon.match(/(\d+)%/);
         if (match && match[1]) {
@@ -728,7 +723,7 @@ async validateCoupon(code, userId) {
       };
     }
     
-    // Ha ide jutunk, akkor nem találtunk kupont
+
     console.log('Nem található kupon ezzel a kóddal');
     return { valid: false, reason: 'invalid_code', message: 'Érvénytelen kuponkód' };
   } catch (error) {

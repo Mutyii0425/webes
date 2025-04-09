@@ -90,7 +90,7 @@ class ProductModel {
 
   async updateStock(productId, quantity) {
     try {
-      // Először ellenőrizzük a jelenlegi készletet
+    
       const [currentStock] = await this.db.execute(
         'SELECT keszlet FROM termekek WHERE id = ?',
         [productId]
@@ -100,13 +100,13 @@ class ProductModel {
         throw new Error('Termék nem található');
       }
       
-      // Frissítjük a készletet
+
       await this.db.execute(
         'UPDATE termekek SET keszlet = keszlet - ? WHERE id = ?',
         [quantity, productId]
       );
       
-      // Lekérjük a frissített adatokat
+
       const [rows] = await this.db.execute(
         'SELECT id, nev, keszlet FROM termekek WHERE id = ?',
         [productId]
@@ -119,7 +119,7 @@ class ProductModel {
     }
   }
 
-  // Új metódus az alacsony készletű termékek lekéréséhez
+
   async getLowStockProducts(threshold = 5) {
     try {
       const [rows] = await this.db.execute(
@@ -133,7 +133,7 @@ class ProductModel {
     }
   }
 
-  // Készlet manuális beállítása
+  
   async setStock(productId, newStock) {
     try {
       await this.db.execute(

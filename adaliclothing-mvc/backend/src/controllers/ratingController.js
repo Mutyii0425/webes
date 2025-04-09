@@ -1,7 +1,7 @@
 class RatingController {
-  constructor(ratingModel, db) {  // Adj hozzá egy db paramétert
+  constructor(ratingModel, db) {  
     this.ratingModel = ratingModel;
-    this.db = db;  // Inicializáld a db objektumot
+    this.db = db;  
   }
 
   async getAllRatings(req, res) {
@@ -36,7 +36,7 @@ class RatingController {
       const { felhasznalonev, rating, velemeny } = req.body;
       console.log('Received rating data:', { felhasznalonev, rating, velemeny });
       
-      // Ellenőrizzük, hogy a felhasználónév meg van-e adva
+  
       if (!felhasznalonev) {
         return res.status(400).json({ success: false, error: 'Felhasználónév megadása kötelező' });
       }
@@ -80,7 +80,7 @@ class RatingController {
     }
   }
 
-  // Új metódusok a felhasználói értékelésekhez
+
   async getUserIdByUsername(req, res) {
     try {
       const { username } = req.params;
@@ -115,7 +115,7 @@ class RatingController {
       const userId = req.params.userId;
       console.log(`Értékelések lekérése: ${userId}`);
       
-      // Ellenőrizzük, hogy a ratings táblában van-e rated_user_id oszlop
+
       const hasRatedUserColumn = await this.ratingModel.checkRatedUserColumn();
       
       let ratings = [];
@@ -123,14 +123,13 @@ class RatingController {
       let count = 0;
       
       if (hasRatedUserColumn) {
-        // Ha van rated_user_id oszlop, akkor az alapján kérjük le az értékeléseket
+  
         const result = await this.ratingModel.getUserRatingsByRatedUserId(userId);
         ratings = result.ratings;
         avgRating = result.avgRating;
         count = result.count;
       } else {
-        // Ha nincs rated_user_id oszlop, akkor a felhasználó által adott értékeléseket kérjük le
-        // Ez nem ideális, de átmeneti megoldásként működhet
+
         const result = await this.ratingModel.getUserRatingsByUserId(userId);
         ratings = result.ratings;
         avgRating = result.avgRating;
@@ -175,7 +174,7 @@ class RatingController {
       const { raterUsername, ratedUsername, rating, velemeny } = req.body;
       console.log('Received user rating data:', { raterUsername, ratedUsername, rating, velemeny });
       
-      // Ellenőrizzük, hogy a felhasználónevek meg vannak-e adva
+   
       if (!raterUsername || !ratedUsername) {
         return res.status(400).json({ 
           success: false, 
@@ -183,7 +182,7 @@ class RatingController {
         });
       }
       
-      // Lekérjük a felhasználók azonosítóit
+
       const raterUserId = await this.ratingModel.getUserIdByUsername(raterUsername);
       console.log('Rater user ID:', raterUserId, 'for username:', raterUsername);
       
@@ -204,7 +203,7 @@ class RatingController {
         });
       }
       
-      // Ellenőrizzük, hogy a felhasználó nem értékeli-e saját magát
+
       if (raterUserId === ratedUserId) {
         return res.status(400).json({ 
           success: false, 
@@ -212,9 +211,7 @@ class RatingController {
         });
       }
       
-      // Ellenőrizzük, hogy létezik-e már értékelés a két felhasználó között
-      // FONTOS: Ne használd a this.db.execute() hívást, hanem a ratingModel-t!
-      // Adj hozzá egy új metódust a ratingModel-hez:
+    
       try {
         const existingRating = await this.ratingModel.getUserRating(raterUserId, ratedUserId);
         
@@ -232,7 +229,7 @@ class RatingController {
         });
       }
       
-      // Hozzáadjuk az értékelést
+    
       try {
         await this.ratingModel.createUserRating({ raterUserId, ratedUserId, rating, velemeny });
         res.json({ success: true });
@@ -276,7 +273,7 @@ class RatingController {
     try {
       const { raterUsername, ratedUsername, rating, velemeny } = req.body;
       
-      // Get user IDs from usernames
+      
       const raterId = await this.ratingModel.getUserIdByUsername(raterUsername);
       const ratedId = await this.ratingModel.getUserIdByUsername(ratedUsername);
       
@@ -284,7 +281,7 @@ class RatingController {
         return res.status(404).json({ success: false, error: 'One or both users not found' });
       }
       
-      // Save the rating
+      
       await this.ratingModel.createUserRating({ 
         raterId, 
         ratedId, 
@@ -304,7 +301,7 @@ class RatingController {
       const { raterUsername, ratedUsername, rating, velemeny } = req.body;
       console.log('Received user rating data:', { raterUsername, ratedUsername, rating, velemeny });
       
-      // Ellenőrizzük, hogy a felhasználónevek meg vannak-e adva
+     
       if (!raterUsername || !ratedUsername) {
         return res.status(400).json({ 
           success: false, 
@@ -312,7 +309,7 @@ class RatingController {
         });
       }
       
-      // Lekérjük a felhasználók azonosítóit
+     
       const raterUserId = await this.ratingModel.getUserIdByUsername(raterUsername);
       console.log('Rater user ID:', raterUserId, 'for username:', raterUsername);
       
@@ -333,7 +330,7 @@ class RatingController {
         });
       }
       
-      // Ellenőrizzük, hogy a felhasználó nem értékeli-e saját magát
+     
       if (raterUserId === ratedUserId) {
         return res.status(400).json({ 
           success: false, 
@@ -341,7 +338,7 @@ class RatingController {
         });
       }
       
-      // Ellenőrizzük, hogy létezik-e már értékelés a két felhasználó között
+    
       try {
         const existingRating = await this.ratingModel.getUserRating(raterUserId, ratedUserId);
         
@@ -359,7 +356,7 @@ class RatingController {
         });
       }
       
-      // Hozzáadjuk az értékelést
+     
       try {
         await this.ratingModel.createUserRating({ raterUserId, ratedUserId, rating, velemeny });
         res.json({ success: true });
@@ -428,13 +425,13 @@ class RatingController {
       const { email, username, rating, velemeny } = req.body;
       console.log('Received order feedback:', { email, username, rating, velemeny });
       
-      // Először próbáljuk meg email alapján megtalálni a felhasználót
+   
       let userId = null;
       if (email) {
         userId = await this.ratingModel.getUserIdByEmail(email);
       }
       
-      // Ha email alapján nem találtuk meg, próbáljuk meg felhasználónév alapján
+    
       if (!userId && username) {
         userId = await this.ratingModel.getUserIdByUsername(username);
       }
@@ -446,7 +443,7 @@ class RatingController {
         });
       }
       
-      // Mentjük az értékelést
+    
       await this.ratingModel.createRating({ userId, rating, velemeny });
       
       res.json({ success: true, message: 'Értékelés sikeresen mentve' });

@@ -20,11 +20,11 @@ export default (couponController) => {
   router.get('/user-coupons/:userId', async (req, res) => {
     try {
       const userId = req.params.userId;
-      // Kupon adatok lekérése az adatbázisból
+
       const coupons = await db.query('SELECT * FROM coupons WHERE user_id = ?', [userId]);
       
       if (coupons.length === 0) {
-        return res.json([]); // Üres tömböt adunk vissza, ha nincs kupon
+        return res.json([]); 
       }
       
       res.json(coupons);

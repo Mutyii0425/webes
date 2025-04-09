@@ -69,10 +69,9 @@ class RatingModel {
     }
   }
 
-  // Új metódusok a felhasználói értékelésekhez
+  
   async checkRatedUserColumn() {
     try {
-      // Ellenőrizzük, hogy a ratings táblában van-e rated_user_id oszlop
       const [columns] = await this.db.execute(`
         SHOW COLUMNS FROM ratings LIKE 'rated_user_id'
       `);
@@ -153,7 +152,7 @@ class RatingModel {
         ORDER BY ur.date DESC
       `, [userId]);
       
-      // Számítsuk ki az átlagos értékelést
+   
       let avgRating = 0;
       if (rows.length > 0) {
         const sum = rows.reduce((total, row) => total + row.rating, 0);

@@ -69,9 +69,9 @@ const cartItemCount = cartItems.reduce((total, item) => total + item.mennyiseg, 
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
-    // Check if user is logged in first
+
     if (!isLoggedIn) {
-      // Show login required message
+   
       const alertBox = document.createElement('div');
       alertBox.style.cssText = `
         position: fixed;
@@ -483,16 +483,16 @@ const analyzeImageWithAI = async (imageData) => {
 
     console.log('AI elemzés eredménye:', data);
     
-    // Ellenőrizzük, hogy az AI talált-e ruhát a képen
+ 
     if (data.noClothingDetected || !data.suggestedCategory) {
       console.error('Nem ismerhető fel ruha a képen');
-      // Vizuális figyelmeztetés megjelenítése
+   
       showErrorMessage('Nem ismerhető fel ruha a képen. Kérjük, töltsön fel egy másik képet!');
       setIsAnalyzing(false);
       return;
     }
 
-    // Az eredmények beállítása a form mezőkbe
+  
     setSelectedCategory(data.suggestedCategory);
     setDescription(data.suggestedDescription);
     
@@ -505,17 +505,11 @@ const analyzeImageWithAI = async (imageData) => {
 };
 
 
-
-
-// Új state változó a hibaüzenet állapotának nyomon követéséhez
-
-
-// Módosított showErrorMessage függvény
 const showErrorMessage = (message) => {
-  // Ha már van megjelenített hibaüzenet, ne jelenítsen meg újat
+
   if (errorAlertShown) return;
   
-  // Beállítjuk, hogy van megjelenített hibaüzenet
+ 
   setErrorAlertShown(true);
   
   const alertBox = document.createElement('div');
@@ -578,7 +572,7 @@ const showErrorMessage = (message) => {
 
   document.body.appendChild(alertBox);
   
-  // Amikor eltávolítjuk az alertet, visszaállítjuk az errorAlertShown értékét
+
   const removeAlert = () => {
     if (document.body.contains(alertBox)) {
       document.body.removeChild(alertBox);
@@ -605,7 +599,7 @@ const showErrorMessage = (message) => {
   `;
   document.head.appendChild(style);
   
-  // Automatikusan eltávolítjuk 5 másodperc után
+
   setTimeout(() => {
     if (document.body.contains(alertBox)) {
       alertBox.style.animation = 'fadeOut 0.3s ease-in-out';
@@ -619,18 +613,16 @@ const showErrorMessage = (message) => {
 const handleImageUpload = (event) => {
   const files = Array.from(event.target.files);
   
-  // Töröljük a korábbi hibaüzenet állapotot
+
   setErrorAlertShown(false);
-  
-  // Ha a feltöltött képek száma + a már meglévő képek száma csak 1 lesz,
-  // akkor figyelmeztessük a felhasználót
+
   if (selectedImages.length === 0 && files.length === 1) {
     setTimeout(() => {
       showErrorMessage('Legalább 2 képet kell feltölteni az AI elemzés elindításához');
     }, 300);
   }
   
-  // Tároljuk az összes új képet egy tömbben
+
   const newImages = [];
   let loadedCount = 0;
   
@@ -653,17 +645,15 @@ const handleImageUpload = (event) => {
         newImages.push(compressedImage);
         loadedCount++;
         
-        // Ha minden kép betöltődött, akkor frissítjük a state-et
+
         if (loadedCount === files.length) {
           setSelectedImages(prevImages => {
             const allImages = [...prevImages, ...newImages];
             console.log(`Képek száma: ${allImages.length}`);
             
-            // Ha legalább 2 kép van, és korábban nem volt legalább 2 kép,
-            // akkor indítsuk el az AI elemzést
+
             if (allImages.length >= 2 && prevImages.length < 2) {
               console.log('Legalább 2 kép feltöltve, AI elemzés indítása...');
-              // Kis késleltetéssel indítjuk, hogy a state frissülhessen
               setTimeout(() => {
                 if (!errorAlertShown) {
                   analyzeImageWithAI(allImages[0]);

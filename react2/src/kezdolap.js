@@ -154,7 +154,7 @@ const Home = () => {
   }, []);
 
   const handlePrizeWon = (prize, couponCode) => {
-    console.log("Nyeremény megkapva:", prize, "Kód:", couponCode); // Debugging
+    console.log("Nyeremény megkapva:", prize, "Kód:", couponCode); 
     setWonPrize(prize);
     setShowWelcomeDialog(false);
     
@@ -189,20 +189,19 @@ useEffect(() => {
   };
 
   useEffect(() => {
-    // Ellenőrizzük, hogy a felhasználó be van-e jelentkezve
+  
     const user = localStorage.getItem('user');
     if (user) {
       setIsLoggedIn(true);
       
-      // Lekérjük a frissített felhasználói adatokat, beleértve a kupon információkat is
+
       fetchUserCoupons().then(coupons => {
         if (coupons && coupons.length > 0) {
-          // A kupon állapotok frissítése a komponensben
+  
           const activeCoupon = coupons.find(c => !c.isUsed && !c.isExpired);
           
           if (activeCoupon) {
-            // Ha van aktív kupon, frissítjük a megfelelő állapotokat
-            // (ha vannak ilyenek a kezdőlapon)
+         
           }
         }
       });
@@ -210,7 +209,7 @@ useEffect(() => {
       setIsLoggedIn(false);
     }
     
-    // Egyéb kezdőlap inicializálási kód...
+ 
   }, []);
 
   const hideDialog = (dialogType) => {
@@ -284,11 +283,11 @@ useEffect(() => {
       
       const data = await response.json();
       
-      // Frissítjük a localStorage-ban tárolt felhasználói adatokat
+  
       if (data && Array.isArray(data)) {
-        // Regisztrációs kupon keresése
+      
         const regCoupon = data.find(c => c.type === 'registration' && !c.isUsed && !c.isExpired);
-        // Email kupon keresése
+
         const emailCoupon = data.find(c => c.type === 'email' && !c.isUsed && !c.isExpired);
         
         if (regCoupon) {
@@ -347,7 +346,7 @@ useEffect(() => {
   const saveCouponToDatabase = async (coupon, couponCode) => {
     const userData = JSON.parse(localStorage.getItem('user'));
     try {
-      // Az új API végpont használata
+   
       const response = await fetch('https://adaliclothing.onrender.com/api/coupons/generate-registration', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -363,7 +362,7 @@ useEffect(() => {
       console.log("Backend válasz:", result);
       
       if (response.ok) {
-        // Frissítjük a localStorage-ben tárolt adatokat a kompatibilitás érdekében
+        
         userData.kupon = coupon;
         userData.kuponKod = couponCode;
         userData.kupon_hasznalva = false;
@@ -535,37 +534,36 @@ useEffect(() => {
   }, [currentImageIndex, isAnimating, images.length]);
 
   useEffect(() => {
-    // Csak a body és html elemekre állítjuk be az overflow-x: hidden-t
+
     document.body.style.overflowX = 'hidden';
     document.documentElement.style.overflowX = 'hidden';
     
-    // Viewport meta tag módosítása a skálázás korlátozásához
+ 
     const viewport = document.querySelector('meta[name=viewport]');
     if (viewport) {
       viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0';
     }
     
-    // Megakadályozzuk az alapértelmezett érintés eseményeket az oldalon,
-    // kivéve a vélemények konténerét
+
     const preventDefaultTouch = (e) => {
-      // Ha a vélemények konténerén belül vagyunk, ne akadályozzuk meg az eseményt
+     
       if (e.target.closest('#ratingsContainer')) {
         return;
       }
       
-      // Egyébként akadályozzuk meg a vízszintes görgetést
+   
       if (Math.abs(e.touches[0].clientX - e.touches[0].screenX) > 5) {
         e.preventDefault();
       }
     };
     
-    // document.addEventListener('touchmove', preventDefaultTouch, { passive: false });
+
     
     return () => {
-      // Cleanup: visszaállítjuk az eredeti állapotot
+
       document.body.style.overflowX = '';
       document.documentElement.style.overflowX = '';
-      // document.removeEventListener('touchmove', preventDefaultTouch);
+     
     };
   }, []);
   
@@ -580,10 +578,10 @@ useEffect(() => {
         color: darkMode ? 'white' : 'black',
         minHeight: '100vh',
         transition: 'all 0.3s ease-in-out',
-        overflowX: 'hidden',  // Ez a sor a fontos
-        position: 'relative', // Hozzáadjuk a position: relative-ot
-        width: '100%',        // Explicit szélesség beállítása
-        maxWidth: '100vw'     // Maximum szélesség korlátozása
+        overflowX: 'hidden',  
+        position: 'relative', 
+        width: '100%',       
+        maxWidth: '100vw'   
       }}>
 
         <Box
@@ -1560,14 +1558,14 @@ useEffect(() => {
     animation-duration: 0.1s !important;
   }
   
-  /* Hardveres gyorsítás */
+
   .animated-element {
     will-change: transform, opacity;
     transform: translateZ(0);
     backface-visibility: hidden;
   }
   
-  /* Animáció kikapcsolása, ha a felhasználó preferálja */
+
   @media (prefers-reduced-motion: reduce) {
     * {
       animation-duration: 0.001s !important;
@@ -1575,7 +1573,7 @@ useEffect(() => {
     }
   }
   
-  /* Animációk tisztítása */
+
   @keyframes fadeOut {
     from { opacity: 1; }
     to { opacity: 0; }
@@ -1618,20 +1616,19 @@ useEffect(() => {
       touch-action: pan-y;
     }
     
-    /* Minden konténer elem korlátozása, kivéve a vélemények konténerét */
+
     #root, .MuiBox-root:not(#ratingsContainer), .MuiContainer-root {
       max-width: 100%;
       overflow-x: hidden;
     }
     
-    /* A vélemények konténere maradjon görgethető */
     #ratingsContainer {
       overflow-x: auto;
       touch-action: pan-x;
       -webkit-overflow-scrolling: touch;
     }
     
-    /* Horizontális görgetés letiltása érintéses eszközökön, kivéve a vélemények konténerét */
+
     @media (pointer: coarse) {
       *:not(#ratingsContainer, #ratingsContainer *) {
         touch-action: pan-y;
@@ -1957,7 +1954,7 @@ useEffect(() => {
 </Box>
 
 <Box
-  id="ratingsContainer" // Adjunk hozzá egy ID-t a konténerhez
+  id="ratingsContainer" 
   ref={contentRef}
   sx={{
     display: 'flex',
@@ -1966,7 +1963,7 @@ useEffect(() => {
       sm: 2.5,     
       md: 3          
     },
-    overflowX: 'auto', // Ez maradjon auto
+    overflowX: 'auto', 
     scrollbarWidth: 'none',
     backgroundColor: darkMode ? '#333' : '#f5f5f5',
     backgroundImage: darkMode
@@ -1987,10 +1984,10 @@ useEffect(() => {
       md: '100%'        
     },
     margin: '0 auto',
-    WebkitOverflowScrolling: 'touch', // Jobb görgetési élmény iOS-en
-    touchAction: 'pan-x', // Csak vízszintes görgetés engedélyezése
-    position: 'relative', // Relatív pozíció
-    zIndex: 5 // Magasabb z-index, hogy a görgetés működjön
+    WebkitOverflowScrolling: 'touch', 
+    touchAction: 'pan-x', 
+    position: 'relative', 
+    zIndex: 5 
   }}
 >
   {Array.isArray(ratings) && ratings.map((rating, index) => (

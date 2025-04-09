@@ -190,7 +190,7 @@ export default function Kosar() {
       paddingBottom: '100px', 
       transition: 'all 0.3s ease-in-out'
     }}>
-      {/* Header */}
+  
       <Box
         sx={{
           display: 'flex',
@@ -483,8 +483,7 @@ export default function Kosar() {
           )}
         </Box>
       </Box>
-      
-      {/* Side Menu */}
+
       <Box sx={{
         position: 'fixed',
         top: 0,
@@ -499,7 +498,7 @@ export default function Kosar() {
         <Menu sideMenuActive={sideMenuActive} toggleSideMenu={toggleSideMenu} />
       </Box>
 
-      {/* Dark Mode Switch */}
+
       <FormGroup sx={{ 
         position: 'absolute', 
         top: isExtraSmall ? 50 : 60, 
@@ -521,7 +520,7 @@ export default function Kosar() {
         />
       </FormGroup>
 
-      {/* Main Content */}
+    
       <Container 
         maxWidth="lg" 
         sx={{ 
@@ -639,7 +638,7 @@ export default function Kosar() {
             sm: 2
           }
         }}>
-          {/* Egy sorban elrendezés */}
+     
           <Box sx={{
             display: 'flex',
             flexDirection: 'row',
@@ -648,7 +647,7 @@ export default function Kosar() {
             flexWrap: { xs: 'wrap', sm: 'nowrap' },
             gap: { xs: 1, sm: 2 }
           }}>
-            {/* Termék kép és név egy csoportban */}
+         
             <Box sx={{
               display: 'flex',
               alignItems: 'center',
@@ -699,7 +698,7 @@ export default function Kosar() {
               </Box>
             </Box>
 
-            {/* Egységár */}
+       
             <Box sx={{
               display: { xs: 'none', sm: 'block' },
               flex: '0 0 auto',
@@ -717,7 +716,7 @@ export default function Kosar() {
               </Typography>
             </Box>
 
-            {/* Mennyiség vezérlők */}
+     
             <Box sx={{
               display: 'flex',
               alignItems: 'center',
@@ -768,7 +767,7 @@ export default function Kosar() {
               </IconButton>
             </Box>
 
-            {/* Teljes ár */}
+       
             <Box sx={{
               flex: { xs: '1 1 auto', sm: '0 0 15%' },
               textAlign: 'right'
@@ -786,7 +785,7 @@ export default function Kosar() {
               >
                 {(item.ar * item.mennyiseg).toLocaleString()} Ft
               </Typography>
-              {/* Mobilon megjelenő egységár */}
+           
               <Typography
                 variant="body2"
                 sx={{
@@ -799,7 +798,7 @@ export default function Kosar() {
               </Typography>
             </Box>
 
-            {/* Törlés gomb */}
+       
             <Box sx={{
               flex: '0 0 auto'
             }}>
@@ -889,7 +888,7 @@ export default function Kosar() {
   )}
 </Grid>
 
-{/* Order Summary */}
+
 <Grid item xs={12} md={4}>
 <Card
     sx={{
@@ -941,7 +940,7 @@ export default function Kosar() {
           mb: 1.5,
         }
       }}>
-        {/* Free shipping notification - Simplified for mobile */}
+   
         <Box
           sx={{
             backgroundColor: darkMode ? 'rgba(76, 175, 80, 0.1)' : 'rgba(76, 175, 80, 0.1)',
@@ -993,7 +992,7 @@ export default function Kosar() {
           </Typography>
         </Box>
 
-        {/* Order summary items - Optimized for mobile */}
+  
         {[
           { label: 'Részösszeg:', value: totalPrice },
           {
@@ -1062,7 +1061,7 @@ export default function Kosar() {
         ))}
       </Box>
 
-      {/* Checkout button - Mobile optimized */}
+  
       <Button
         variant="contained"
         fullWidth
@@ -1133,7 +1132,7 @@ export default function Kosar() {
       backdropFilter: 'blur(4px)'
     }}
     onClick={(e) => {
-      // Close when clicking outside the card
+
       if (e.target === e.currentTarget) {
         setDeleteAlert(false);
       }
@@ -1406,7 +1405,7 @@ export default function Kosar() {
           </Box>
         )}
 
-        {/* Logout Confirmation Dialog */}
+
         {showLogoutAlert && (
           <Box
             sx={{
@@ -1423,7 +1422,7 @@ export default function Kosar() {
               padding: { xs: '16px', sm: 0 },
             }}
             onClick={(e) => {
-              // Close when clicking outside the card
+              
               if (e.target === e.currentTarget) {
                 setShowLogoutAlert(false);
               }
@@ -1613,7 +1612,7 @@ export default function Kosar() {
           </Box>
         )}
 
-        {/* Inactivity Alert */}
+ 
         <InactivityAlert darkMode={darkMode} inactivityTimeout={120000} />
       </Container>
     </div>

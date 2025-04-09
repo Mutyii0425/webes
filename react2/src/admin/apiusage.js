@@ -50,7 +50,7 @@ export default function ApiUsage() {
       const data = await response.json();
       console.log('API usage data received:', data);
       
-      // Ellenőrizzük, hogy a data egy tömb
+   
       if (!Array.isArray(data)) {
         console.warn('API usage data is not an array:', data);
         setApiUsage([]);

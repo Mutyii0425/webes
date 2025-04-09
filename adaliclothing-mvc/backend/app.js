@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import nodemailer from 'nodemailer'; // Új import
+import nodemailer from 'nodemailer'; 
 
 import corsMiddleware from './src/middleware/corsMiddleware.js';
 import errorHandler from './src/middleware/errorMiddleware.js';
@@ -126,7 +126,6 @@ async function checkAndFixDatabaseSchema(db) {
       console.log("Added kupon_lejar column to user table");
     }
     
-    // Email kupon mezők ellenőrzése
     const [emailKuponColumns] = await db.execute("SHOW COLUMNS FROM user LIKE 'email_kupon'");
     if (emailKuponColumns.length === 0) {
       await db.execute("ALTER TABLE user ADD COLUMN email_kupon VARCHAR(50) DEFAULT NULL");

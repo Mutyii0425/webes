@@ -27,17 +27,13 @@ class OrderModel {
 
   async deleteAllOrdersAndCustomers() {
     try {
-      // Tranzakció kezdése
       await this.db.beginTransaction();
       
       try {
-        // Először töröljük a rendeléseket (a külső kulcs miatt)
         const [ordersResult] = await this.db.execute('DELETE FROM rendeles');
         
-        // Majd töröljük a vevőket
         const [customersResult] = await this.db.execute('DELETE FROM vevo');
         
-        // Tranzakció véglegesítése
         await this.db.commit();
         
         return {
@@ -47,7 +43,6 @@ class OrderModel {
           deletedCustomers: customersResult.affectedRows
         };
       } catch (error) {
-        // Hiba esetén visszagörgetjük a tranzakciót
         await this.db.rollback();
         throw error;
       }
@@ -69,7 +64,6 @@ class OrderModel {
     }
   }
 
-// Egy vevő adatainak lekérdezése
 async getCustomerById(customerId) {
   try {
     const [rows] = await this.db.execute(
@@ -88,10 +82,8 @@ async getCustomerById(customerId) {
   }
 }
 
-// Rendelés státuszának frissítése
 async updateOrderStatus(orderId, status) {
   try {
-    // Ellenőrizzük, hogy létezik-e a rendelés
     const [orderCheck] = await this.db.execute(
       'SELECT id FROM rendeles WHERE id = ?',
       [orderId]
@@ -101,7 +93,6 @@ async updateOrderStatus(orderId, status) {
       return { success: false, message: 'Order not found' };
     }
     
-    // Frissítsük a státuszt
     await this.db.execute(
       'UPDATE rendeles SET statusz = ? WHERE id = ?',
       [status, orderId]
@@ -114,33 +105,27 @@ async updateOrderStatus(orderId, status) {
   }
 }
 
-// Rendelési statisztikák lekérdezése
 async getOrderStats() {
   try {
-    // Összes rendelés száma
     const [totalOrders] = await this.db.execute(
       'SELECT COUNT(*) as count FROM rendeles'
     );
     
-    // Kézbesített rendelések száma
     const [deliveredOrders] = await this.db.execute(
       'SELECT COUNT(*) as count FROM rendeles WHERE statusz = ?',
       ['Kézbesítve']
     );
     
-    // Törölt rendelések száma
     const [canceledOrders] = await this.db.execute(
       'SELECT COUNT(*) as count FROM rendeles WHERE statusz = ?',
       ['Törölve']
     );
     
-    // Folyamatban lévő rendelések száma
     const [inProgressOrders] = await this.db.execute(
       'SELECT COUNT(*) as count FROM rendeles WHERE statusz NOT IN (?, ?)',
       ['Kézbesítve', 'Törölve']
     );
     
-    // Összes bevétel
     const [totalRevenue] = await this.db.execute(
       'SELECT SUM(ar) as total FROM rendeles WHERE statusz != ?',
       ['Törölve']
@@ -158,8 +143,6 @@ async getOrderStats() {
     throw new Error('Database error when fetching order statistics');
   }
 }
-
- 
 }
 
 export default OrderModel;

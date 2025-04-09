@@ -1563,7 +1563,7 @@ const AboutUs = () => {
                         lineHeight: 1.7
                       }}
                     >
-                     Balatonederics:8312 Balatonederics, petőfi útca 1.
+                     Balatonederics: 8312, Balatonederics, Petőfi utca 1.
                     </Typography>
                   </Box>
                   

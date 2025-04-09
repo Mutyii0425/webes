@@ -45,7 +45,7 @@ export default function Fiokom() {
   const [isLoading, setIsLoading] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
   
-  // Define orderStats state
+
   const [orderStats, setOrderStats] = useState({
     totalOrders: 0,
     totalAmount: 0,
@@ -69,21 +69,20 @@ export default function Fiokom() {
       setUserData({
         email: user.email,
         username: user.username || user.felhasznalonev,
-        kuponKod: user.kupon_kod || user.kuponKod || '' // Hozzáadva a kuponKod
+        kuponKod: user.kupon_kod || user.kuponKod || '' 
       });
       
       setCouponInfo({
         hasCoupon: !!user.kupon,
         couponCode: user.kupon || '',
         isUsed: !!user.kupon_hasznalva,
-        kuponKod: user.kupon_kod || user.kuponKod || '' // Hozzáadva a kuponKod
+        kuponKod: user.kupon_kod || user.kuponKod || '' 
       });
       
-      // Check if profile image exists in localStorage
+    
       if (user.profileImage) {
         setProfileImage(user.profileImage);
       } else if (user.username || user.felhasznalonev) {
-        // If not in localStorage, try to load from server
         loadProfileImage(user.username || user.felhasznalonev);
       }
     }
@@ -91,12 +90,9 @@ export default function Fiokom() {
   
   const loadProfileImage = async (username) => {
     try {
-      // Mivel a profilkép végpont még nem létezik, ezt a részt kihagyjuk
-      // Ha később implementálva lesz, akkor itt lehet lekérni
       console.log("Profilkép betöltése:", username);
     } catch (error) {
       console.error('Hiba a profilkép betöltésekor:', error);
-      // Continue with default avatar (no need to show error to user)
     }
   };
   
@@ -104,7 +100,7 @@ export default function Fiokom() {
     const file = event.target.files[0];
     if (!file) return;
     
-    // Check file size (limit to 5MB)
+
     if (file.size > 5 * 1024 * 1024) {
       setSnackbar({
         open: true,
@@ -120,10 +116,9 @@ export default function Fiokom() {
       
       try {
         if (userData && userData.username) {
-          // Show loading state
+   
           setIsLoading(true);
-          
-          // Küldjük el a képet a szervernek
+
           const response = await fetch('https://adaliclothing.onrender.com/profile-image', {
             method: 'POST',
             headers: {
@@ -138,15 +133,15 @@ export default function Fiokom() {
           const result = await response.json();
           
           if (result.success) {
-            // Sikeres feltöltés esetén frissítsük a lokális állapotot is
+          
             setProfileImage(imageData);
             
-            // Store in localStorage for menu2.js to access
+            
             const user = JSON.parse(localStorage.getItem('user')) || {};
             user.profileImage = imageData;
             localStorage.setItem('user', JSON.stringify(user));
             
-            // Dispatch a custom event to notify other components
+          
             window.dispatchEvent(new Event('profileImageUpdated'));
             
             setSnackbar({
@@ -182,7 +177,7 @@ export default function Fiokom() {
     reader.readAsDataURL(file);
   };
   
-  // Define openFileSelector function
+  
   const openFileSelector = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
@@ -196,7 +191,7 @@ export default function Fiokom() {
       fetch(`https://adaliclothing.onrender.com/api/order-stats/${user.f_azonosito}`)
         .then(res => {
           if (!res.ok) {
-            // Ha 404-es hiba van, akkor nincs rendelés
+            
             if (res.status === 404) {
               return { totalOrders: 0, totalAmount: 0, lastOrderDate: null };
             }
@@ -214,7 +209,7 @@ export default function Fiokom() {
         })
         .catch(err => {
           console.log('Hiba:', err);
-          // Nem kritikus hiba, így nem mutatunk hibaüzenetet
+       
         })
         .finally(() => {
           setIsLoading(false);
@@ -239,7 +234,7 @@ export default function Fiokom() {
 
 
   
-  // Kupon információk lekérése
+
   useEffect(() => {
     const fetchCouponInfo = async () => {
       try {
@@ -249,14 +244,14 @@ export default function Fiokom() {
           if (response.ok) {
             const coupons = await response.json();
             
-            // Összes kupon feldolgozása
+      
             if (coupons && Array.isArray(coupons)) {
-              // Regisztrációs kupon keresése
+          
               const regCoupon = coupons.find(c => c.type === 'registration');
-              // Email kupon keresése
+      
               const emailCoupon = coupons.find(c => c.type === 'email');
               
-              // Kupon információk beállítása
+      
               setCouponInfo({
                 hasCoupon: !!(regCoupon || emailCoupon),
                 coupons: {
@@ -527,7 +522,7 @@ export default function Fiokom() {
                         position: 'relative',
                         mt: -8
                       }}>
-                        {/* Rejtett file input a profilkép feltöltéshez */}
+                     
                         <input
                           type="file"
                           accept="image/*"
@@ -536,7 +531,7 @@ export default function Fiokom() {
                           onChange={handleProfileImageUpload}
                         />
                         
-                        {/* Avatar profilképpel vagy alapértelmezett betűvel */}
+                       
                         <Avatar 
                           src={profileImage}
                           sx={{ 
@@ -571,13 +566,13 @@ export default function Fiokom() {
                           {userData?.username?.charAt(0)?.toUpperCase() || 'A'}
                         </Avatar>
                         
-                        {/* Profilkép feltöltés gomb */}
+
                         <IconButton 
                           onClick={openFileSelector}
                           sx={{
                             position: 'absolute',
-                            bottom: '65%',  // Position it at the bottom of the Avatar
-                            right: '35%',   // Position it to the right side of the Avatar
+                            bottom: '65%',  
+                            right: '35%',  
                             backgroundColor: darkMode ? 'rgba(25, 118, 210, 0.8)' : 'rgba(25, 118, 210, 0.9)',
                             color: '#fff',
                             width: '32px',
@@ -948,7 +943,7 @@ export default function Fiokom() {
         </Grid>
       </Container>
       
-      {/* Snackbar értesítések megjelenítése */}
+     
       <Snackbar 
         open={snackbar.open} 
         autoHideDuration={6000} 
