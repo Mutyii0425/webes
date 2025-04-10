@@ -302,13 +302,8 @@ class CouponController {
 
   async getCouponStats(req, res) {
     try {
-      res.json({
-        totalCoupons: 0,
-        usedCoupons: 0,
-        activeCoupons: 0,
-        expiredCoupons: 0,
-        totalDiscount: 0
-      });
+      const stats = await this.couponModel.getCouponStats();
+      res.json(stats);
     } catch (error) {
       console.error('Hiba a kupon statisztikák lekérésekor:', error);
       res.status(500).json({ error: 'Szerver hiba történt a kupon statisztikák lekérésekor' });
@@ -481,42 +476,6 @@ class CouponController {
     } catch (error) {
       console.error('Hiba a kupon ellenőrzésekor:', error);
       res.status(500).json({ error: 'Szerver hiba történt a kupon ellenőrzésekor' });
-    }
-  }
-
-  async deleteCoupon(req, res) {
-    try {
-      const { id } = req.params;
-      
-      if (!id) {
-        return res.status(400).json({ error: 'Kupon azonosító hiányzik' });
-      }
-      
-      const result = await this.couponModel.deleteCoupon(id);
-      
-      if (result) {
-        res.json({ success: true, message: 'Kupon sikeresen törölve' });
-      } else {
-        res.status(404).json({ error: 'Kupon nem található' });
-      }
-    } catch (error) {
-      console.error('Hiba a kupon törlésekor:', error);
-      res.status(500).json({ error: 'Szerver hiba történt a kupon törlésekor' });
-    }
-  }
-
-  async deleteAllUsedCoupons(req, res) {
-    try {
-      const deletedCount = await this.couponModel.deleteAllUsedCoupons();
-      
-      res.json({ 
-        success: true, 
-        message: `Sikeresen törölve ${deletedCount} felhasznált kupon`,
-        deletedCount 
-      });
-    } catch (error) {
-      console.error('Hiba a kuponok törlésekor:', error);
-      res.status(500).json({ error: 'Szerver hiba történt a kuponok törlésekor' });
     }
   }
   

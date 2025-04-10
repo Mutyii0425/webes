@@ -16,8 +16,7 @@ export default (couponController) => {
   router.post('/save-wheel-prize', (req, res) => couponController.saveWheelPrize(req, res));
   router.post('/validate-coupon', (req, res) => couponController.validateCoupon(req, res)); 
   router.get('/check-coupon/:code', (req, res) => couponController.checkCouponInDatabase(req, res));
-  router.delete('/delete-used', (req, res) => couponController.deleteAllUsedCoupons(req, res));
-  router.delete('/:id', (req, res) => couponController.deleteCoupon(req, res));
+  
 
   router.get('/user-coupons/:userId', async (req, res) => {
     try {
