@@ -18,7 +18,6 @@ export default (couponController) => {
   router.get('/check-coupon/:code', (req, res) => couponController.checkCouponInDatabase(req, res));
   router.delete('/delete-used', (req, res) => couponController.deleteAllUsedCoupons(req, res));
   router.delete('/:id', (req, res) => couponController.deleteCoupon(req, res));
-  
 
   router.get('/user-coupons/:userId', async (req, res) => {
     try {

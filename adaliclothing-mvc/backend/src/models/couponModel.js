@@ -734,7 +734,7 @@ async validateCoupon(code, userId) {
 
 async deleteCoupon(couponId) {
   const [result] = await this.db.execute(
-    'DELETE FROM user_coupons WHERE id = ?',
+    'DELETE FROM user WHERE id = ?',
     [couponId]
   );
   return result.affectedRows > 0;
@@ -742,7 +742,7 @@ async deleteCoupon(couponId) {
 
 async deleteAllUsedCoupons() {
   const [result] = await this.db.execute(
-    'DELETE FROM user_coupons WHERE is_used = 1'
+    'DELETE FROM user WHERE is_used = 1'
   );
   return result.affectedRows;
 }

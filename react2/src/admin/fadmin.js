@@ -261,6 +261,13 @@ export default function Fadmin() {
   };
 
   const handleDeleteCoupon = async (couponId) => {
+    if (!couponId) {
+      setSnackbarMessage('Érvénytelen kupon azonosító');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+      return;
+    }
+    
     if (!window.confirm('Biztosan törölni szeretnéd ezt a kupont?')) {
       return;
     }
@@ -271,14 +278,12 @@ export default function Fadmin() {
       });
       
       if (response.ok) {
-   
         setCouponHistory(couponHistory.filter(coupon => coupon.id !== couponId));
         
         setSnackbarMessage('Kupon sikeresen törölve');
         setSnackbarSeverity('success');
         setSnackbarOpen(true);
         
-    
         fetchCouponStats();
       } else {
         const errorData = await response.json();
