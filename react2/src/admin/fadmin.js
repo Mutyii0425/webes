@@ -260,6 +260,76 @@ export default function Fadmin() {
     }
   };
 
+  const handleDeleteCoupon = async (couponId) => {
+    if (!window.confirm('Biztosan törölni szeretnéd ezt a kupont?')) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`https://adaliclothing.onrender.com/api/coupons/${couponId}`, {
+        method: 'DELETE'
+      });
+      
+      if (response.ok) {
+   
+        setCouponHistory(couponHistory.filter(coupon => coupon.id !== couponId));
+        
+        setSnackbarMessage('Kupon sikeresen törölve');
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
+        
+    
+        fetchCouponStats();
+      } else {
+        const errorData = await response.json();
+        setSnackbarMessage(errorData.error || 'Hiba történt a kupon törlésekor');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+      }
+    } catch (error) {
+      console.error('Hiba a kupon törlésekor:', error);
+      setSnackbarMessage('Hálózati hiba történt a kupon törlésekor');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
+  };
+  
+  const handleDeleteAllUsedCoupons = async () => {
+    if (!window.confirm('Biztosan törölni szeretnéd az összes felhasznált kupont?')) {
+      return;
+    }
+    
+    try {
+      const response = await fetch('https://adaliclothing.onrender.com/api/coupons/delete-used', {
+        method: 'DELETE'
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        
+    
+        setCouponHistory(couponHistory.filter(coupon => !coupon.isUsed));
+        
+        setSnackbarMessage(`Sikeresen törölve ${result.deletedCount} felhasznált kupon`);
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
+        
+   
+        fetchCouponStats();
+      } else {
+        const errorData = await response.json();
+        setSnackbarMessage(errorData.error || 'Hiba történt a kuponok törlésekor');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+      }
+    } catch (error) {
+      console.error('Hiba a kuponok törlésekor:', error);
+      setSnackbarMessage('Hálózati hiba történt a kuponok törlésekor');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
+  };
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -840,112 +910,147 @@ export default function Fadmin() {
             </Box>
           )}
   
-          {activeTab === 2 && (
-            <Box sx={{ color: 'white' }}>
-              <Typography variant="h4" gutterBottom sx={{ 
-                fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' } 
-              }}>
-                Kupon Történet
-              </Typography>
-              
-              {isLoadingHistory ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-                  <CircularProgress />
-                </Box>
-                          ) : (
-                            <TableContainer 
-                              component={Paper} 
-                              sx={{ 
-                                mt: 3,
-                                overflowX: 'auto'
-                              }}
-                            >
-                              <Table size={isMobile ? "small" : "medium"}>
-                                <TableHead>
-                                  <TableRow>
-                                    <TableCell sx={{ 
-                                      display: { xs: 'none', sm: 'table-cell' },
-                                      fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
-                                    }}>Felhasználó</TableCell>
-                                    <TableCell sx={{ 
-                                      fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
-                                    }}>Típus</TableCell>
-                                    <TableCell sx={{ 
-                                      display: { xs: 'none', md: 'table-cell' },
-                                      fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
-                                    }}>Kód</TableCell>
-                                    <TableCell sx={{ 
-                                      fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
-                                    }}>Kedvezmény</TableCell>
-                                    <TableCell sx={{ 
-                                      display: { xs: 'none', sm: 'table-cell' },
-                                      fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
-                                    }}>Létrehozva</TableCell>
-                                    <TableCell sx={{ 
-                                      display: { xs: 'none', md: 'table-cell' },
-                                      fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
-                                    }}>Lejárat</TableCell>
-                                    <TableCell sx={{ 
-                                      fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
-                                    }}>Státusz</TableCell>
-                                  </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                {couponHistory.map((coupon, index) => (
-                                  <TableRow key={coupon.id || `coupon-${index}`}>
-                                      <TableCell sx={{ 
-                                        display: { xs: 'none', sm: 'table-cell' },
-                                        fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
-                                      }}>{coupon.username}</TableCell>
-                                      <TableCell sx={{ 
-                                        fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
-                                      }}>{coupon.type === 'registration' ? 'Reg.' : 'Email'}</TableCell>
-                                      <TableCell sx={{ 
-                                        display: { xs: 'none', md: 'table-cell' },
-                                        fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
-                                      }}>{coupon.code}</TableCell>
-                                      <TableCell sx={{ 
-                                        fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
-                                      }}>{coupon.discount}%</TableCell>
-                                      <TableCell sx={{ 
-                                        display: { xs: 'none', sm: 'table-cell' },
-                                        fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
-                                      }}>{new Date(coupon.createdAt).toLocaleDateString()}</TableCell>
-                                      <TableCell sx={{ 
-                                        display: { xs: 'none', md: 'table-cell' },
-                                        fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
-                                      }}>{new Date(coupon.expiryDate).toLocaleDateString()}</TableCell>
-                                      <TableCell sx={{ 
-                                        fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
-                                      }}>
-                                        {coupon.isUsed ? (
-                                          <Chip label="Használt" color="error" size="small" />
-                                        ) : coupon.isExpired ? (
-                                          <Chip label="Lejárt" color="warning" size="small" />
-                                        ) : (
-                                          <Chip label="Aktív" color="success" size="small" />
-                                        )}
-                                      </TableCell>
-                                    </TableRow>
-                                  ))}
-                                </TableBody>
-                              </Table>
-                            </TableContainer>
-                          )}
-                          
-                          <Box sx={{ mt: 4 }}>
-                            <Button 
-                              variant="contained" 
-                              color="primary" 
-                              onClick={fetchCouponHistory}
-                              disabled={isLoadingHistory}
-                              size={isMobile ? "small" : "medium"}
-                            >
-                              Történet frissítése
-                            </Button>
-                          </Box>
-                        </Box>
-                      )}
+  {activeTab === 2 && (
+  <Box sx={{ color: 'white' }}>
+    <Box sx={{ 
+      display: 'flex', 
+      flexDirection: { xs: 'column', sm: 'row' }, 
+      justifyContent: 'space-between',
+      alignItems: { xs: 'flex-start', sm: 'center' },
+      mb: 3,
+      gap: 2
+    }}>
+      <Typography variant="h4" gutterBottom sx={{ 
+        fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' } 
+      }}>
+        Kupon Történet
+      </Typography>
+      
+      <Button 
+        variant="contained" 
+        color="error" 
+        onClick={handleDeleteAllUsedCoupons}
+        startIcon={<DeleteIcon />}
+        size={isMobile ? "small" : "medium"}
+        sx={{ fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.875rem' } }}
+      >
+        Összes használt kupon törlése
+      </Button>
+    </Box>
+    
+    {isLoadingHistory ? (
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+        <CircularProgress />
+      </Box>
+    ) : (
+      <TableContainer 
+        component={Paper} 
+        sx={{ 
+          mt: 3,
+          overflowX: 'auto'
+        }}
+      >
+        <Table size={isMobile ? "small" : "medium"}>
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ 
+                display: { xs: 'none', sm: 'table-cell' },
+                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
+              }}>Felhasználó</TableCell>
+              <TableCell sx={{ 
+                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
+              }}>Típus</TableCell>
+              <TableCell sx={{ 
+                display: { xs: 'none', md: 'table-cell' },
+                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
+              }}>Kód</TableCell>
+              <TableCell sx={{ 
+                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
+              }}>Kedvezmény</TableCell>
+              <TableCell sx={{ 
+                display: { xs: 'none', sm: 'table-cell' },
+                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
+              }}>Létrehozva</TableCell>
+              <TableCell sx={{ 
+                display: { xs: 'none', md: 'table-cell' },
+                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
+              }}>Lejárat</TableCell>
+              <TableCell sx={{ 
+                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
+              }}>Státusz</TableCell>
+              <TableCell sx={{ 
+                fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.875rem' }
+              }}>Műveletek</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {couponHistory.map((coupon, index) => (
+              <TableRow key={coupon.id || `coupon-${index}`}>
+                <TableCell sx={{ 
+                  display: { xs: 'none', sm: 'table-cell' },
+                  fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
+                }}>{coupon.username}</TableCell>
+                <TableCell sx={{ 
+                  fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
+                }}>{coupon.type === 'registration' ? 'Reg.' : 'Email'}</TableCell>
+                <TableCell sx={{ 
+                  display: { xs: 'none', md: 'table-cell' },
+                  fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
+                }}>{coupon.code}</TableCell>
+                <TableCell sx={{ 
+                  fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
+                }}>{coupon.discount}%</TableCell>
+                <TableCell sx={{ 
+                  display: { xs: 'none', sm: 'table-cell' },
+                  fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
+                }}>{new Date(coupon.createdAt).toLocaleDateString()}</TableCell>
+                <TableCell sx={{ 
+                  display: { xs: 'none', md: 'table-cell' },
+                  fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
+                }}>{new Date(coupon.expiryDate).toLocaleDateString()}</TableCell>
+                <TableCell sx={{ 
+                  fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.875rem' }
+                }}>
+                  {coupon.isUsed ? (
+                    <Chip label="Használt" color="error" size="small" />
+                  ) : coupon.isExpired ? (
+                    <Chip label="Lejárt" color="warning" size="small" />
+                  ) : (
+                    <Chip label="Aktív" color="success" size="small" />
+                  )}
+                </TableCell>
+                <TableCell>
+                  {coupon.isUsed && (
+                    <IconButton 
+                      color="error" 
+                      onClick={() => handleDeleteCoupon(coupon.id)}
+                      aria-label="delete"
+                      size={isMobile ? "small" : "medium"}
+                    >
+                      <DeleteIcon fontSize={isMobile ? "small" : "medium"} />
+                    </IconButton>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    )}
+    
+    <Box sx={{ mt: 4 }}>
+      <Button 
+        variant="contained" 
+        color="primary" 
+        onClick={fetchCouponHistory}
+        disabled={isLoadingHistory}
+        size={isMobile ? "small" : "medium"}
+      >
+        Történet frissítése
+      </Button>
+    </Box>
+  </Box>
+)}
 
 {activeTab === 3 && (
     <Box sx={{ color: 'white' }}>

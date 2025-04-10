@@ -731,6 +731,21 @@ async validateCoupon(code, userId) {
     return { valid: false, reason: 'database_error', message: 'Adatbázis hiba történt' };
   }
 }
+
+async deleteCoupon(couponId) {
+  const [result] = await this.db.execute(
+    'DELETE FROM user_coupons WHERE id = ?',
+    [couponId]
+  );
+  return result.affectedRows > 0;
+}
+
+async deleteAllUsedCoupons() {
+  const [result] = await this.db.execute(
+    'DELETE FROM user_coupons WHERE is_used = 1'
+  );
+  return result.affectedRows;
+}
 }
 
 export default CouponModel;
