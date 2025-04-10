@@ -325,7 +325,7 @@ class CouponModel {
       
    
       const [ordersWithDiscountResult] = await this.db.execute(`
-        SELECT SUM(ar * mennyiseg * 0.15) as total_discount
+        SELECT SUM(teljes_ar * mennyiseg * 0.15) as total_discount
           FROM rendeles r
           JOIN vevo v ON r.vevo_id = v.id
           JOIN user u ON v.email = u.email
